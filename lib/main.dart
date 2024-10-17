@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:medminder/splashscreen.dart';
+import 'package:medminder/getStarted/getStarted.dart';
+
 
 void main() {
   runApp(const MedMinder());
@@ -12,7 +14,7 @@ class MedMinder extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home:SplashScreen(),
+      home: getStarted(),
     );
   }
 }
