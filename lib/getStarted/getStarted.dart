@@ -28,7 +28,7 @@ class getStarted extends StatelessWidget {
                   style: TextStyle(fontFamily: 'Poppins', fontSize: 20)
                   ),
             ),
-            ElevatedButton(onPressed: () {print("I Love You!!!");}, 
+            ElevatedButton(onPressed: () {print("Button Pressed");}, 
                           child: 
                           Text('Get Started',
                                  style: TextStyle(fontSize: 20, 
