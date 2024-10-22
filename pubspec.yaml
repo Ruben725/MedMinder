@@ -24,4 +24,18 @@ flutter:
 
   uses-material-design: true
 
+  assets:
+    - assets/images/MedMinderLogo.png
+   # - assets/fonts/Poppins-Regular.ttf
+
+fonts:
+  - family: Poppins
+    fonts:
+    - asset: assets/fonts/Poppins-Regular.ttf
+      weight: 700
+
+
+      
+      
+
   
