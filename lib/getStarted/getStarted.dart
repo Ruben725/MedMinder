@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:medminder/custom.dart';
+import 'package:medminder/getStarted/login.dart';
 
 class getStarted extends StatelessWidget {
   const getStarted ({super.key});
@@ -28,19 +30,20 @@ class getStarted extends StatelessWidget {
                   style: TextStyle(fontFamily: 'Poppins', fontSize: 20)
                   ),
             ),
-            ElevatedButton(onPressed: () {print("Button Pressed");}, 
-                          child: 
-                          Text('Get Started',
-                                 style: TextStyle(fontSize: 20, 
-                                                 color: Color.fromRGBO(0, 0, 0, 100))
-                                  ),
-                          style: ElevatedButton.styleFrom( 
-                            backgroundColor: Color.fromRGBO(0, 172, 226, 100),
+
+           NewButton(text: 'Get Started', 
+                  color:Color.fromRGBO(0, 172, 226, 1),
+                  onPressed: () {Navigator.push(context,
+                          MaterialPageRoute(
+                            builder: (context) => Login(),
                           ),
-                          ),
-          ]
+                    );
+                   },
+                  ),
+            ],
+          ),
+          
         ),
-      ),
-    );
+      );
   }
 }
