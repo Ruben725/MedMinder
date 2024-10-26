@@ -9,16 +9,18 @@ class Login extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [Stack(children: [
-        Container(
-          height: 800,
-          width: 400,
-          color: Color.fromRGBO(255, 255, 255, 1)
-        ),
-        NewButton(text: 'Login', 
+    return Scaffold(
+     body:
+      Center(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+           Image.asset('assets/images/MedMinderLogo.png'),
+
+           SizedBox(height: 40.0),
+
+           NewButton(text: 'Login', 
                   color:Color.fromRGBO(0, 172, 226, 1),
                   onPressed: () {Navigator.push(context,
                           MaterialPageRoute(
@@ -26,8 +28,22 @@ class Login extends StatelessWidget {
                           ),
                     );
                    },
-                  ),],),
-      ],
+                  ),
+            
+            SizedBox(height: 20.0),
+
+            NewButton(text: 'Create Account', 
+                  color:Color.fromRGBO(217, 217, 217, 1),
+                  onPressed: () {Navigator.push(context,
+                          MaterialPageRoute(
+                            builder: (context) => Login(),
+                          ),
+                    );
+                   },
+                  ),
+           ],
+        ),
+      ),
     );
   }
 }
