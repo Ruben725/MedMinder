@@ -11,6 +11,12 @@ class accountInfo extends StatefulWidget {
 }
 
 class _accountInfoState extends State<accountInfo> {
+  final unameController = TextEditingController();
+  final emailController = TextEditingController();
+  final cemailController = TextEditingController();
+  final pwController = TextEditingController();
+  final cpwController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,8 +42,13 @@ class _accountInfoState extends State<accountInfo> {
                  Container(
                   height: 35.0,
                   width: 150.0,
-                  color: Color.fromRGBO(197, 247, 196, 1),
-                  child: Center(child: Text('Account'))),
+                  decoration: BoxDecoration(
+                    color: Color.fromRGBO(197, 247, 196, 1),
+                    border: Border(bottom: 
+                              BorderSide(color: Color.fromRGBO(65, 199, 62, 1),
+                                         width: 3))),
+                  child: Center(child: Text('Account'))
+                  ),
                  Container(
                   height: 35.0,
                   width: 150.0,
@@ -46,6 +57,98 @@ class _accountInfoState extends State<accountInfo> {
             ],),
             SizedBox(height: 20.0),
 
+            Container(
+              height: 32,
+              width: 260,
+              decoration: BoxDecoration(
+                color: Color.fromRGBO(217, 217, 217, 1),
+                border: Border.all(color: Colors.black, width: 1),
+                borderRadius: BorderRadius.circular(15)
+              ),
+              child:TextFormField(   
+                controller: unameController,
+                decoration: const InputDecoration(
+                hintText: 'Username',
+                 contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                 border: InputBorder.none,
+               ),
+              ),
+            ),
+            SizedBox(height: 20.0),
+
+            Container(
+              height: 32,
+              width: 260,
+              decoration: BoxDecoration(
+                color: Color.fromRGBO(217, 217, 217, 1),
+                border: Border.all(color: Colors.black, width: 1),
+                borderRadius: BorderRadius.circular(15)
+              ),
+              child:TextFormField(
+                controller: emailController,
+                decoration: const InputDecoration(
+                 hintText: 'Email',
+                 contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                 border: InputBorder.none,
+               ),
+              ),
+            ),
+            SizedBox(height: 20.0),
+            Container(
+              height: 32,
+              width: 260,
+              decoration: BoxDecoration(
+                color: Color.fromRGBO(217, 217, 217, 1),
+                border: Border.all(color: Colors.black, width: 1),
+                borderRadius: BorderRadius.circular(15)
+              ),
+              child:TextFormField(
+                controller: cemailController,
+                decoration: const InputDecoration(
+                 hintText: 'Confirm Email',
+                 contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                 border: InputBorder.none,
+               ),
+              ),
+            ),
+            SizedBox(height: 20.0,),
+
+            Container(
+              height: 32,
+              width: 260,
+              decoration: BoxDecoration(
+                color: Color.fromRGBO(217, 217, 217, 1),
+                border: Border.all(color: Colors.black, width: 1),
+                borderRadius: BorderRadius.circular(15)
+              ),
+              child:TextFormField(
+                controller: pwController,
+                decoration: const InputDecoration(
+                 hintText: 'Password',  
+                 contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                 border: InputBorder.none,               ),
+              ),
+            ),
+            SizedBox(height: 20.0),
+
+            Container(
+              height: 32,
+              width: 260,
+              decoration: BoxDecoration(
+                color: Color.fromRGBO(217, 217, 217, 1),
+                border: Border.all(color: Colors.black, width: 1),
+                borderRadius: BorderRadius.circular(15)
+              ),
+              child:TextFormField(
+                controller: cpwController,
+                decoration: const InputDecoration(
+                 hintText: 'Confirm Password',
+                 contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                 border: InputBorder.none,
+               ),
+              ),
+            ),
+            SizedBox(height: 40.0),
 
             NewButton(text: 'Next', 
                   color:Color.fromRGBO(65, 199, 62, 1),
