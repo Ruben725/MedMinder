@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:medminder/custom.dart';
-//import 'package:medminder/getStarted/AccountInfo.dart';
+import 'package:medminder/getStarted/accountInfo.dart';
 
 
 class Login extends StatelessWidget {
@@ -36,7 +36,7 @@ class Login extends StatelessWidget {
                   color:Color.fromRGBO(217, 217, 217, 1),
                   onPressed: () {Navigator.push(context,
                           MaterialPageRoute(
-                            builder: (context) => Login(),
+                            builder: (context) => accountInfo(),
                           ),
                     );
                    },
