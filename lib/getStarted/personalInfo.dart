@@ -10,7 +10,9 @@ class personalInfo extends StatefulWidget {
   State<personalInfo> createState() => _personalInfoState();
 }
 
+//User personal Info page
 class _personalInfoState extends State<personalInfo> {
+  //Controllers for user input
   final fnameController = TextEditingController();
   final lnameController = TextEditingController();
   final sexController = TextEditingController();
@@ -21,9 +23,11 @@ class _personalInfoState extends State<personalInfo> {
      body:
       Center(
         child: Column(
+          //Center Column to page
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            //Container for Title, 
             Container(
               height: 65, 
               width: 280, 
@@ -32,17 +36,21 @@ class _personalInfoState extends State<personalInfo> {
                       style:TextStyle(color: Colors.black, fontSize: 32, fontFamily: 'Poppins')
                       )
             ),
-
+            
+            //Row for Page names
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                //Each Container has the page name
                  Container(
                   height: 35.0,
                   width: 150.0,
                   color: Color.fromRGBO(197, 247, 196, 1),
                   child: Center(child: Text('Account'))
                   ),
+                
+                  //Container has the bottom border underlined (green, width 3)
                  Container(
                   height: 35.0,
                   width: 150.0,
@@ -53,27 +61,33 @@ class _personalInfoState extends State<personalInfo> {
                                          width: 3))),
                   child: Center(child: Text('Personal Info'))),
             ],),
+            //Used SizedBox to space out containers
             SizedBox(height: 20.0),
 
+            //First name Input field
+            //layout is same for the rest of the input fields
             Container(
               height: 32,
               width: 260,
+               //Shapes the input field
               decoration: BoxDecoration(
                 color: Color.fromRGBO(217, 217, 217, 1),
                 border: Border.all(color: Colors.black, width: 1),
                 borderRadius: BorderRadius.circular(15)
               ),
+              //Takes input from user, and hints on what to input
               child:TextFormField(   
                 controller: fnameController,
                 decoration: const InputDecoration(
                 hintText: 'First Name',
-                 contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                 contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 10), //Text positioin in field
                  border: InputBorder.none,
                ),
               ),
             ),
             const SizedBox(height: 20.0),
 
+            //Last name input field
             Container(
               height: 32,
               width: 260,
@@ -92,6 +106,8 @@ class _personalInfoState extends State<personalInfo> {
               ),
             ),
              const SizedBox(height: 20.0),
+
+             //Sex input field, might be best to switch to M/F option only
             Container(
               height: 32,
               width: 75,
@@ -111,22 +127,25 @@ class _personalInfoState extends State<personalInfo> {
             ),
             SizedBox(height: 40.0),
 
+            //Custon button used
+            //Finish Button
             NewButton(text: 'Finish', 
                   color:Color.fromRGBO(65, 199, 62, 1),
                   onPressed: () {Navigator.push(context,
                           MaterialPageRoute(
-                            builder: (context) => accountInfo(),
+                            builder: (context) => accountInfo(), //Will go to Login or Homepage
                           ),
                     );
                    },
                   ),
             SizedBox(height: 20.0),
-
+ 
+            //Back Button
             NewButton(text: 'Back', 
                   color:Color.fromRGBO(217, 217, 217, 1),
                   onPressed: () {Navigator.push(context,
                           MaterialPageRoute(
-                            builder: (context) => accountInfo(),
+                            builder: (context) => accountInfo(), //Goes to accountInfo page
                           ),
                     );
                    },

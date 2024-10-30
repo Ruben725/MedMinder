@@ -14,6 +14,7 @@ class getStarted extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children:[
+            //Title Container
             Container(
             height: 200, 
             width: 250, 
@@ -22,6 +23,8 @@ class getStarted extends StatelessWidget {
                     style:TextStyle(color: Color.fromRGBO(0, 172, 226, 100), fontSize: 40, fontFamily: 'Poppins')
                     )
             ),
+
+            //App Description 
             Container(
             height: 300,
             width: 280,
@@ -31,11 +34,12 @@ class getStarted extends StatelessWidget {
                   ),
             ),
 
+            //Get Started Button
            NewButton(text: 'Get Started', 
                   color:Color.fromRGBO(0, 172, 226, 1),
                   onPressed: () {Navigator.push(context,
                           MaterialPageRoute(
-                            builder: (context) => Login(),
+                            builder: (context) => Login(), //Goes to login page
                           ),
                     );
                    },

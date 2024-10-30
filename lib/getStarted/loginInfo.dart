@@ -11,6 +11,7 @@ class loginInfo extends StatefulWidget {
 }
 
 class _loginInfoState extends State<loginInfo> {
+  //Controllers for user input
   final unameController = TextEditingController();
   final pwController = TextEditingController();
 
@@ -20,9 +21,11 @@ class _loginInfoState extends State<loginInfo> {
      body:
       Center(
         child: Column(
+          //Center all containers to page
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            //Container for Title
             Container(
               height: 80, 
               width: 250, 
@@ -32,11 +35,11 @@ class _loginInfoState extends State<loginInfo> {
                     )
             ),
 
-
+            //Medminder Logo
             Image.asset('assets/images/MedMinderLogo.png'),
             const SizedBox(height: 80.0),
 
-
+            //User name input
             Container(
               height: 32,
               width: 260,
@@ -56,6 +59,7 @@ class _loginInfoState extends State<loginInfo> {
             ),
             const SizedBox(height: 20.0),
 
+            //Password input
             Container(
               height: 32,
               width: 260,
@@ -75,22 +79,24 @@ class _loginInfoState extends State<loginInfo> {
             ),
              const SizedBox(height: 20.0),
 
+            //Login Button
             NewButton(text: 'Login', 
                   color:Color.fromRGBO(0, 172, 226, 100),
                   onPressed: () {Navigator.push(context,
                           MaterialPageRoute(
-                            builder: (context) => loginInfo(),
+                            builder: (context) => loginInfo(), //Will take user to Homepage
                           ),
                     );
                    },
                   ),
             SizedBox(height: 20.0),
 
+            //Back Button
             NewButton(text: 'Back', 
                   color:Color.fromRGBO(217, 217, 217, 1),
                   onPressed: () {Navigator.push(context,
                           MaterialPageRoute(
-                            builder: (context) => Login(),
+                            builder: (context) => Login(),  //to Login page 
                           ),
                     );
                    },

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+//Button layout, takes in text, color background, and
+//where you want to navigate to.
 class NewButton extends StatelessWidget{
   final String text;
   final Color color;
