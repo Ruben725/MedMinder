@@ -11,7 +11,6 @@ dependencies:
   flutter:
     sdk: flutter
 
-
   cupertino_icons: ^1.0.6
 
 dev_dependencies:
@@ -23,5 +22,18 @@ dev_dependencies:
 flutter:
 
   uses-material-design: true
+
+  assets:
+    - assets/images/MedMinderLogo.png
+  
+
+fonts:
+  - family: Poppins
+    fonts:
+    - asset: assets/fonts/Poppins-Regular.ttf
+      weight: 700
+
+      
+      
 
   
