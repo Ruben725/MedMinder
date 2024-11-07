@@ -15,6 +15,14 @@ class _loginInfoState extends State<loginInfo> {
   final unameController = TextEditingController();
   final pwController = TextEditingController();
 
+  //deletes the use of controllers
+  @override
+  void dispose(){
+    super.dispose();
+    unameController.dispose();
+    pwController.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

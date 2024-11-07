@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
 import 'package:medminder/custom.dart';
 import 'package:medminder/getStarted/login.dart';
+import 'package:medminder/getStarted/userAuth.dart';
 import 'package:medminder/getStarted/personalInfo.dart';
 
 class accountInfo extends StatefulWidget {
@@ -12,11 +14,28 @@ class accountInfo extends StatefulWidget {
 }
 
 class _accountInfoState extends State<accountInfo> {
+  final auth = userAuth();
+  final formkey = GlobalKey<FormState>();
+
   final unameController = TextEditingController();
   final emailController = TextEditingController();
   final cemailController = TextEditingController();
   final pwController = TextEditingController();
   final cpwController = TextEditingController();
+
+  String? validateEmail(String? email) {
+    if (emailController.text != cemailController.text){
+      return "Email does not match";
+    }
+    return null;
+  }
+
+  String? validatePW(String? pw){
+    if (pwController.text != cpwController.text){
+      return "Password does not match";
+    }
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -103,6 +122,7 @@ class _accountInfoState extends State<accountInfo> {
                  contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
                  border: InputBorder.none,
                ),
+               validator: (email) => email!.isEmpty ? "Enter Email" : null,
               ),
             ),
             SizedBox(height: 20.0),
@@ -123,6 +143,7 @@ class _accountInfoState extends State<accountInfo> {
                  contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
                  border: InputBorder.none,
                ),
+               validator: validateEmail,
               ),
             ),
             SizedBox(height: 20.0,),
@@ -142,6 +163,7 @@ class _accountInfoState extends State<accountInfo> {
                  hintText: 'Password',  
                  contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
                  border: InputBorder.none,               ),
+                 validator: (pw) => pw!.isEmpty ? "Enter Email" : null,
               ),
             ),
             SizedBox(height: 20.0),
@@ -162,20 +184,26 @@ class _accountInfoState extends State<accountInfo> {
                  contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
                  border: InputBorder.none,
                ),
+               validator: validatePW,
               ),
             ),
             SizedBox(height: 40.0),
 
             //Next Button
-            NewButton(text: 'Next', 
-                  color:Color.fromRGBO(65, 199, 62, 1),
-                  onPressed: () {Navigator.push(context,
-                          MaterialPageRoute(
-                            builder: (context) => personalInfo(), //Goes to PersonalInfo Page
-                          ),
-                    );
-                   },
-                  ),
+          ElevatedButton(
+          onPressed: _signup/* () {
+               if (formkey.currentState!.validate()){
+                 Navigator.push(context,
+                 MaterialPageRoute(builder: (context) => _signup(),),);
+               }
+          }*/, 
+          child: Text("Next", style: TextStyle(fontSize: 20, color: Color.fromRGBO(0, 0, 0, 1), ),),
+                       style: ElevatedButton.styleFrom(
+                        backgroundColor: Color.fromRGBO(65, 199, 62, 1),
+                        shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25),
+                         )
+                        )),
             SizedBox(height: 20.0),
 
             //Back Button
@@ -193,4 +221,16 @@ class _accountInfoState extends State<accountInfo> {
       ),
     );
   }
+
+      _signup() async{
+      final user = await auth.createUserA(emailController.text, pwController.text);
+      if (user != null){
+        print("User created");
+        goToPersonal(context);
+      }
+    }
+
+    goToPersonal(BuildContext context) => Navigator.push(context, 
+                MaterialPageRoute(builder: (context) => const personalInfo()),
+                );
 }
