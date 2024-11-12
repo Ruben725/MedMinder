@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:medminder/custom.dart';
+import 'package:medminder/getStarted/accountInfo.dart';
 import 'package:medminder/getStarted/login.dart';
 
 class getStarted extends StatelessWidget {
@@ -16,7 +17,7 @@ class getStarted extends StatelessWidget {
           children:[
             //Title Container
             Container(
-            height: 200, 
+            height: 100, 
             width: 250, 
             child: Text('Medminder',
                     textAlign: TextAlign.center,
@@ -24,9 +25,12 @@ class getStarted extends StatelessWidget {
                     )
             ),
 
+            Image.asset('assets/images/MedMinderLogo.png'),
+            SizedBox(height: 30),
+
             //App Description 
             Container(
-            height: 300,
+            height: 250,
             width: 280,
             child: Text('Introducing the MedMinder a new informative experience to keep you updated on your medication. Helping have an easier experience on staying up to date with all your medication ',
                   textAlign: TextAlign.center,
@@ -35,11 +39,11 @@ class getStarted extends StatelessWidget {
             ),
 
             //Get Started Button
-           NewButton(text: 'Get Started', 
+           NewButton(text: 'Next', 
                   color:Color.fromRGBO(0, 172, 226, 1),
                   onPressed: () {Navigator.push(context,
                           MaterialPageRoute(
-                            builder: (context) => Login(), //Goes to login page
+                            builder: (context) => accountInfo(), //Goes to login page
                           ),
                     );
                    },

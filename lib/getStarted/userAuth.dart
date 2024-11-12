@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:firebase_auth/firebase_auth.dart';
 
 class userAuth{
@@ -7,8 +6,9 @@ class userAuth{
 
   Future<User?> createUserA(String email, String pw) async{
     try{
-    final credential = await auth.createUserWithEmailAndPassword(email: email, password: pw);
-    return credential.user;
+    final userCredential = await auth.createUserWithEmailAndPassword(email: email, password: pw);
+    String uid = userCredential.user!.uid;
+    return userCredential.user;
     }catch(e){
         print("Login Unsucessful");
     }

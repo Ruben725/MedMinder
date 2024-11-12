@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-//import 'package:medminder/splashscreen.dart';
-import 'package:medminder/getStarted/getStarted.dart';
+import 'package:medminder/splashscreen.dart';
+//import 'package:medminder/getStarted/getStarted.dart';
 
 
 void main() async{
@@ -18,7 +18,7 @@ class MedMinder extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false, //Removes Demo Banner
       theme: ThemeData(scaffoldBackgroundColor: Colors.white,), // Makes every page Scaffold background white
-      home: getStarted(), //Starts app at getStarted page... For now
+      home: SplashScreen(), //Starts app at getStarted page... For now
     );
   }
 }
