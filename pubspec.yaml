@@ -1,17 +1,18 @@
 name: medminder
 description: "A new Flutter project."
-publish_to: 'none' 
+publish_to: "none"
 
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.3.4 <4.0.0'
+  sdk: ">=3.3.4 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
 
   cupertino_icons: ^1.0.6
+  intl: ^0.17.0
 
 dev_dependencies:
   flutter_test:
@@ -20,20 +21,13 @@ dev_dependencies:
   flutter_lints: ^3.0.0
 
 flutter:
-
   uses-material-design: true
 
   assets:
     - assets/images/MedMinderLogo.png
-  
 
 fonts:
   - family: Poppins
     fonts:
-    - asset: assets/fonts/Poppins-Regular.ttf
-      weight: 700
-
-      
-      
-
-  
+      - asset: assets/fonts/Poppins-Regular.ttf
+        weight: 700

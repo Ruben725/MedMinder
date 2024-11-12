@@ -76,30 +76,9 @@ class MedicationsList extends StatelessWidget {
               height: constraints.maxHeight,
               child: Column(
                 children: [
-                  // App Bar
+                  // Spacer between top of page and title
                   Container(
-                    height: 42,
-                    color: Colors.white,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(width: 54, height: 18),
-                        Row(
-                          children: List.generate(
-                            5,
-                            (index) => Padding(
-                              padding: const EdgeInsets.only(left: 8),
-                              child: Container(
-                                width: 18,
-                                height: 18,
-                                child: const FlutterLogo(),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                    height: 25,
                   ),
 
                   // Title Section

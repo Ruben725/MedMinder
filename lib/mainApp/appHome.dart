@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:medminder/mainApp/medicationsList.dart';
+import 'package:intl/intl.dart';
 
 class AppHome extends StatelessWidget {
   @override
@@ -8,60 +9,41 @@ class AppHome extends StatelessWidget {
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
+            DateTime now = DateTime.now();
+            String formattedDate =
+                DateFormat('EEEEEEEEE, \nMMM d, yyyy').format(now);
             return Container(
               height: constraints.maxHeight,
               child: Column(
                 children: [
-                  // Top status bar area
-                  Container(
-                    height: 42,
-                    color: Colors.white,
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(width: 54, height: 18),
-                        Row(
-                          children: List.generate(
-                            5,
-                            (index) => Padding(
-                              padding: EdgeInsets.only(left: 8),
-                              child: Container(
-                                width: 18,
-                                height: 18,
-                                child: FlutterLogo(),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
                   // Date section (non-scrollable)
                   Padding(
                     padding: EdgeInsets.only(
-                        left: 0, right: 16, top: 16, bottom: 16),
-                    child: Column(
+                        left: 16, right: 16, top: 16, bottom: 16),
+                    child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Tuesday',
+                          formattedDate,
                           style: TextStyle(
                             fontSize: 36,
                             fontFamily: 'Poppins',
                             fontWeight: FontWeight.w400,
                           ),
                         ),
-                        SizedBox(height: 8),
-                        Text(
-                          'July 10, 2024',
-                          style: TextStyle(
-                            fontSize: 36,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w400,
-                          ),
+                        SizedBox(
+                          // adds box to seperate the date and the settings icon
+                          width: 80,
                         ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                              top:
+                                  5.0), // Adds padding at the top to move the icon down
+                          child: Icon(
+                            Icons.settings,
+                            size: 45.0,
+                          ),
+                        )
                       ],
                     ),
                   ),
