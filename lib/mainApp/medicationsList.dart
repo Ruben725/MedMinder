@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:medminder/mainApp/appHome.dart';
+import 'package:medminder/mainApp/settings.dart';
 
 class MedicationsList extends StatelessWidget {
   const MedicationsList({Key? key}) : super(key: key);
@@ -147,7 +148,7 @@ class MedicationsList extends StatelessWidget {
                             children: [
                               _buildNavItem(
                                 'Medications',
-                                const FlutterLogo(),
+                                const Icon(Icons.medication),
                                 () {
                                   Navigator.push(
                                     context,
@@ -160,7 +161,7 @@ class MedicationsList extends StatelessWidget {
                               ),
                               _buildNavItem(
                                 'Home',
-                                const FlutterLogo(),
+                                const Icon(Icons.home),
                                 () {
                                   Navigator.push(
                                     context,
@@ -172,12 +173,12 @@ class MedicationsList extends StatelessWidget {
                               ),
                               _buildNavItem(
                                 'Profile',
-                                const FlutterLogo(),
+                                const Icon(Icons.person),
                                 () {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => ProfilePage(),
+                                      builder: (context) => Settings(),
                                     ),
                                   );
                                 },

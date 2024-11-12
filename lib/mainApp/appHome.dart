@@ -1,8 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:medminder/mainApp/medicationsList.dart';
+import 'package:medminder/mainApp/settings.dart';
 import 'package:intl/intl.dart';
 
-class AppHome extends StatelessWidget {
+class AppHome extends StatefulWidget {
+  @override
+  _AppHomeState createState() => _AppHomeState();
+}
+
+class _AppHomeState extends State<AppHome> {
+  final TextEditingController _searchController = TextEditingController();
+
+  // Function to handle search submission
+  void _handleSearchSubmit(String value) {
+    print('Search submitted: $value'); // This will print to terminal/console
+    _searchController.clear(); // Optional: clear the search field after submit
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,24 +51,25 @@ class AppHome extends StatelessWidget {
                             fontWeight: FontWeight.w400,
                           ),
                         ),
-                        SizedBox(
-                          // adds box to seperate the date and the settings icon
-                          width: 80,
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(
-                              top:
-                                  5.0), // Adds padding at the top to move the icon down
-                          child: Icon(
-                            Icons.settings,
-                            size: 45.0,
+                        SizedBox(width: 80),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Settings()),
+                            );
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.only(top: 5.0),
+                            child: Icon(Icons.settings, size: 45.0),
                           ),
                         )
                       ],
                     ),
                   ),
 
-                  // Search bar (non-scrollable)
+                  // Updated Search bar with submit functionality
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16),
                     child: Container(
@@ -60,18 +81,23 @@ class AppHome extends StatelessWidget {
                           borderRadius: BorderRadius.circular(15),
                         ),
                       ),
-                      child: Padding(
-                        padding: EdgeInsets.only(left: 16),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Search',
-                            style: TextStyle(
-                              color: Colors.black.withOpacity(0.5),
-                              fontSize: 16,
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.w400,
-                            ),
+                      child: TextField(
+                        controller: _searchController,
+                        onSubmitted: _handleSearchSubmit,
+                        decoration: InputDecoration(
+                          hintText: 'Search',
+                          hintStyle: TextStyle(
+                            color: Colors.black.withOpacity(0.5),
+                            fontSize: 16,
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w400,
+                          ),
+                          prefixIcon:
+                              Icon(Icons.search, color: Color(0xFF00ABE1)),
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
                           ),
                         ),
                       ),
@@ -93,7 +119,6 @@ class AppHome extends StatelessWidget {
                           _buildMedicationCard('Amlodipine', '4:30 PM'),
                           SizedBox(height: 16),
                           _buildMedicationCard('Benzonatate', '7:00 PM'),
-                          // Add extra padding at the bottom
                           SizedBox(height: 16),
                         ],
                       ),
@@ -120,7 +145,6 @@ class AppHome extends StatelessWidget {
                     child: Stack(
                       alignment: Alignment.bottomCenter,
                       children: [
-                        // Navigation items positioned at the top
                         Positioned(
                           top: 8,
                           left: 0,
@@ -130,7 +154,7 @@ class AppHome extends StatelessWidget {
                             children: [
                               _buildNavItem(
                                 'Medications',
-                                FlutterLogo(),
+                                Icon(Icons.medication),
                                 () {
                                   Navigator.push(
                                     context,
@@ -142,7 +166,7 @@ class AppHome extends StatelessWidget {
                               ),
                               _buildNavItem(
                                 'Home',
-                                FlutterLogo(),
+                                Icon(Icons.home),
                                 () {
                                   Navigator.push(
                                     context,
@@ -154,7 +178,7 @@ class AppHome extends StatelessWidget {
                               ),
                               _buildNavItem(
                                 'Profile',
-                                FlutterLogo(),
+                                Icon(Icons.person),
                                 () {
                                   Navigator.push(
                                     context,
@@ -167,8 +191,6 @@ class AppHome extends StatelessWidget {
                             ],
                           ),
                         ),
-
-                        // Bottom indicators positioned at the bottom
                         Positioned(
                           bottom: 10,
                           child: Row(
