@@ -10,17 +10,38 @@ class AppHome extends StatefulWidget {
 
 class _AppHomeState extends State<AppHome> {
   final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
 
-  // Function to handle search submission
-  void _handleSearchSubmit(String value) {
-    print('Search submitted: $value'); // This will print to terminal/console
-    _searchController.clear(); // Optional: clear the search field after submit
-  }
+  final List<Map<String, String>> medications = [
+    {'name': 'Ibuprofen', 'time': '11:00 AM'},
+    {'name': 'Lisinopril', 'time': '12:30 PM'},
+    {'name': 'Amlodipine', 'time': '4:30 PM'},
+    {'name': 'Benzonatate', 'time': '7:00 PM'},
+  ];
 
   @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
+  }
+
+  // Clear search functionality
+  void _clearSearch() {
+    setState(() {
+      _searchController.clear();
+      _searchQuery = '';
+    });
+  }
+
+  List<Map<String, String>> get filteredMedications {
+    if (_searchQuery.isEmpty) {
+      return medications;
+    }
+    return medications
+        .where((medication) => medication['name']!
+            .toLowerCase()
+            .contains(_searchQuery.toLowerCase()))
+        .toList();
   }
 
   @override
@@ -36,7 +57,6 @@ class _AppHomeState extends State<AppHome> {
               height: constraints.maxHeight,
               child: Column(
                 children: [
-                  // Date section (non-scrollable)
                   Padding(
                     padding: EdgeInsets.only(
                         left: 16, right: 16, top: 16, bottom: 16),
@@ -69,7 +89,7 @@ class _AppHomeState extends State<AppHome> {
                     ),
                   ),
 
-                  // Updated Search bar with submit functionality
+                  // Updated Search bar with clear button
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16),
                     child: Container(
@@ -83,17 +103,29 @@ class _AppHomeState extends State<AppHome> {
                       ),
                       child: TextField(
                         controller: _searchController,
-                        onSubmitted: _handleSearchSubmit,
+                        onChanged: (value) {
+                          setState(() {
+                            _searchQuery = value;
+                          });
+                        },
                         decoration: InputDecoration(
                           hintText: 'Search',
                           hintStyle: TextStyle(
-                            color: Colors.black.withOpacity(0.5),
+                            color: Colors.black.withOpacity(0.7),
                             fontSize: 16,
                             fontFamily: 'Poppins',
                             fontWeight: FontWeight.w400,
                           ),
                           prefixIcon:
                               Icon(Icons.search, color: Color(0xFF00ABE1)),
+                          // Add clear button when there's text
+                          suffixIcon: _searchQuery.isNotEmpty
+                              ? IconButton(
+                                  icon: Icon(Icons.clear,
+                                      color: Colors.black.withOpacity(0.7)),
+                                  onPressed: _clearSearch,
+                                )
+                              : null,
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.symmetric(
                             horizontal: 16,
@@ -106,26 +138,25 @@ class _AppHomeState extends State<AppHome> {
 
                   SizedBox(height: 16),
 
-                  // Scrollable medication cards section
                   Expanded(
                     child: SingleChildScrollView(
                       padding: EdgeInsets.symmetric(horizontal: 16),
                       child: Column(
                         children: [
-                          _buildMedicationCard('Ibuprofen', '11:00 AM'),
-                          SizedBox(height: 16),
-                          _buildMedicationCard('Lisinopril', '12:30 PM'),
-                          SizedBox(height: 16),
-                          _buildMedicationCard('Amlodipine', '4:30 PM'),
-                          SizedBox(height: 16),
-                          _buildMedicationCard('Benzonatate', '7:00 PM'),
-                          SizedBox(height: 16),
+                          ...filteredMedications.map((medication) {
+                            return Column(
+                              children: [
+                                _buildMedicationCard(
+                                    medication['name']!, medication['time']!),
+                                SizedBox(height: 16),
+                              ],
+                            );
+                          }).toList(),
                         ],
                       ),
                     ),
                   ),
 
-                  // Bottom navigation
                   Container(
                     height: 80,
                     decoration: BoxDecoration(
