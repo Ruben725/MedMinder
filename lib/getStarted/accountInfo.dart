@@ -63,33 +63,7 @@ class _accountInfoState extends State<accountInfo> {
               //Used SizedBox to space out containers
               SizedBox(height: 40.0),
 
-              /*
-              //Username Input Container
-              //Same Laytou used for each input container
-              Container(
-                height: 32,
-                width: 260,
-                //Shapes the input field
-                decoration: BoxDecoration(
-                  color: Color.fromRGBO(217, 217, 217, 1),
-                  border: Border.all(color: Colors.black, width: 1),
-                  borderRadius: BorderRadius.circular(15)
-                ),
-                child:TextFormField(   
-                  controller: unameController,
-                  decoration: const InputDecoration(
-                  hintText: 'Username', //Hint text of container
-                  contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 10), //Text position
-                  border: InputBorder.none, // No undreline border
-                ),
-                ),
-              ),
-              */
-              //Used SizedBox for spacing on containers
-              SizedBox(height: 20.0),
-
               //Email Input Field
-              
               Container(
                 width: 260,
                 child:TextFormField(
@@ -107,23 +81,7 @@ class _accountInfoState extends State<accountInfo> {
                   return null;
                 },
                 ),
-              ),/*
-              TextFormField(
-                  controller: emailController,
-                  decoration: InputDecoration(
-                  hintText: 'Email',
-                  contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: BorderSide( color: Colors.black, width: 1.0,)),
-                ),
-                validator: (value){
-                  if(value == null || value.isEmpty) return 'Enter an email';
-                  if (!RegExp(r'^[^@]+@[^@]+\.[^@]+$').hasMatch(value)) return 'Enter a valid email';
-                  return null;
-                },
-                ),
-                */
+              ),
               SizedBox(height: 20.0),
 
               //Confirm email input container

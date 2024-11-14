@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:medminder/Home/home.dart';
 import 'package:medminder/splashscreen.dart';
 //import 'package:medminder/getStarted/getStarted.dart';
 

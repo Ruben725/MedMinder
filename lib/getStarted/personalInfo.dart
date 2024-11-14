@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
+import 'package:medminder/Home/home.dart';
 import 'package:medminder/custom.dart';
+import 'package:medminder/getStarted/accountInfo.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:intl/intl.dart';
-import 'package:medminder/getStarted/accountInfo.dart';
-
 
 class personalInfo extends StatefulWidget {
   final String email;
@@ -30,7 +30,7 @@ class _personalInfoState extends State<personalInfo> {
 
   Future<void> dateSelected(BuildContext) async {
     final DateTime? dateSel = await showDatePicker(context: context, 
-    initialDate: DateTime.now().subtract(Duration(days: 365 * 18)),
+    initialDate: DateTime.now(),
     firstDate: DateTime(1930), lastDate: DateTime.now(),);
     if (dateSel != null){
       setState(() {
@@ -60,6 +60,11 @@ class _personalInfoState extends State<personalInfo> {
       }catch(e){
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed: $e')));
       }
+
+      Navigator.push(context,
+                            MaterialPageRoute(
+                              builder: (context) => AppHome()));
+
     }
   }
   @override
