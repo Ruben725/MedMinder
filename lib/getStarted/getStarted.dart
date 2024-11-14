@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:medminder/custom.dart';
+import 'package:medminder/getStarted/login.dart';
 
 class getStarted extends StatelessWidget {
   const getStarted ({super.key});
@@ -12,6 +14,7 @@ class getStarted extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children:[
+            //Title Container
             Container(
             height: 200, 
             width: 250, 
@@ -20,6 +23,8 @@ class getStarted extends StatelessWidget {
                     style:TextStyle(color: Color.fromRGBO(0, 172, 226, 100), fontSize: 40, fontFamily: 'Poppins')
                     )
             ),
+
+            //App Description 
             Container(
             height: 300,
             width: 280,
@@ -28,19 +33,21 @@ class getStarted extends StatelessWidget {
                   style: TextStyle(fontFamily: 'Poppins', fontSize: 20)
                   ),
             ),
-            ElevatedButton(onPressed: () {print("Button Pressed");}, 
-                          child: 
-                          Text('Get Started',
-                                 style: TextStyle(fontSize: 20, 
-                                                 color: Color.fromRGBO(0, 0, 0, 100))
-                                  ),
-                          style: ElevatedButton.styleFrom( 
-                            backgroundColor: Color.fromRGBO(0, 172, 226, 100),
+
+            //Get Started Button
+           NewButton(text: 'Get Started', 
+                  color:Color.fromRGBO(0, 172, 226, 1),
+                  onPressed: () {Navigator.push(context,
+                          MaterialPageRoute(
+                            builder: (context) => Login(), //Goes to login page
                           ),
-                          ),
-          ]
+                    );
+                   },
+                  ),
+            ],
+          ),
+          
         ),
-      ),
-    );
+      );
   }
 }
