@@ -192,9 +192,9 @@ class _personalInfoState extends State<personalInfo> {
               SizedBox(height: 20.0),
   
               //Back Button
-              NewButton(text: 'Back', 
-                    color:Color.fromRGBO(217, 217, 217, 1),
-                    onPressed: () {Navigator.push(context,
+              Custom.newButton('Back', 
+                    Color.fromRGBO(217, 217, 217, 1),
+                    () {Navigator.push(context,
                             MaterialPageRoute(
                               builder: (context) => accountInfo(), //Goes to accountInfo page
                             ),

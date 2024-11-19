@@ -1,38 +1,69 @@
 import 'package:flutter/material.dart';
+import 'package:medminder/Home/medicationsList.dart';
+import 'package:medminder/Home/settings.dart';
+import 'package:medminder/custom.dart';
 import 'package:intl/intl.dart';
-import 'package:medminder/getStarted/login.dart';
 
-/*
-class Homepage extends StatefulWidget {
-  const Homepage({super.key});
-
+class AppHome extends StatefulWidget {
   @override
-  State<Homepage> createState() => _HomepageState();
+  _AppHomeState createState() => _AppHomeState();
 }
 
-class _HomepageState extends State<Homepage> {
+class _AppHomeState extends State<AppHome> {
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
+
+  final List<Map<String, String>> medications = [
+    {'name': 'Ibuprofen', 'time': '11:00 AM'},
+    {'name': 'Lisinopril', 'time': '12:30 PM'},
+    {'name': 'Amlodipine', 'time': '4:30 PM'},
+    {'name': 'Benzonatate', 'time': '7:00 PM'},
+  ];
+
+  /*
+  // Function to handle search submission
+  void _handleSearchSubmit(String value) {
+    print('Search submitted: $value'); // This will print to terminal/console
+    _searchController.clear(); // Optional: clear the search field after submit
+  }*/
+
   @override
-  Widget build(BuildContext context) {
-    return const Placeholder();
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
-}*/
 
-class AppHome extends StatelessWidget {
+  void _clearSearch() {
+    setState(() {
+      _searchController.clear();
+      _searchQuery = '';
+    });
+  }
+
+  List<Map<String, String>> get filteredMedications {
+    if (_searchQuery.isEmpty) {
+      return medications;
+    }
+    return medications
+        .where((medication) => medication['name']!
+            .toLowerCase()
+            .contains(_searchQuery.toLowerCase()))
+        .toList();
+  }
+
   @override
   Widget build(BuildContext context) {
-
-    DateTime now = DateTime.now();
-    String formattedDate = DateFormat('EEEE,\nMMMM d, yyyy').format(now);
     return Scaffold(
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
+            DateTime now = DateTime.now();
+            String formattedDate =
+                DateFormat('EEEEEEEEE, \nMMM d, yyyy').format(now);
             return Container(
               height: constraints.maxHeight,
               child: Column(
                 children: [
-
-                  SizedBox(height: 30),
                   // Date section (non-scrollable)
                   Padding(
                     padding: EdgeInsets.only(
@@ -43,29 +74,30 @@ class AppHome extends StatelessWidget {
                         Text(
                           formattedDate,
                           style: TextStyle(
-                            fontSize: 30,
+                            fontSize: 36,
                             fontFamily: 'Poppins',
                             fontWeight: FontWeight.w400,
                           ),
                         ),
-                        _buildNavItem(
-                                '',
-                                Icon(Icons.settings, size: 40),
-                                () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => ProfilePage(),
-                                    ),
-                                  );
-                                },
-                              ),
+                        SizedBox(width: 80),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Settings()),
+                            );
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.only(top: 30.0, left: 20,),
+                            child: Icon(Icons.settings, size: 45.0),
+                          ),
+                        )
                       ],
                     ),
                   ),
-                  SizedBox(height: 30),
 
-                  // Search bar (non-scrollable)
+                  // Updated Search bar with submit functionality
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16),
                     child: Container(
@@ -77,18 +109,27 @@ class AppHome extends StatelessWidget {
                           borderRadius: BorderRadius.circular(15),
                         ),
                       ),
-                      child: Padding(
-                        padding: EdgeInsets.only(left: 16),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Search',
-                            style: TextStyle(
-                              color: Colors.black.withOpacity(0.5),
-                              fontSize: 16,
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.w400,
-                            ),
+                      child: TextField(
+                        controller: _searchController,
+                        onChanged: (value) {
+                          setState(() {
+                            _searchQuery = value;
+                          });
+                        },
+                        decoration: InputDecoration(
+                          hintText: 'Search',
+                          hintStyle: TextStyle(
+                            color: Colors.black.withOpacity(0.5),
+                            fontSize: 16,
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w400,
+                          ),
+                          prefixIcon:
+                              Icon(Icons.search, color: Color(0xFF00ABE1)),
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
                           ),
                         ),
                       ),
@@ -110,7 +151,6 @@ class AppHome extends StatelessWidget {
                           _buildMedicationCard('Amlodipine', '4:30 PM'),
                           SizedBox(height: 16),
                           _buildMedicationCard('Benzonatate', '7:00 PM'),
-                          // Add extra padding at the bottom
                           SizedBox(height: 16),
                         ],
                       ),
@@ -118,97 +158,7 @@ class AppHome extends StatelessWidget {
                   ),
 
                   // Bottom navigation
-                  Container(
-                    height: 80,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(24),
-                        topRight: Radius.circular(24),
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.5),
-                          blurRadius: 5,
-                          offset: Offset(2, 0),
-                        ),
-                      ],
-                    ),
-                    child: Stack(
-                      alignment: Alignment.bottomCenter,
-                      children: [
-                        // Navigation items positioned at the top
-                        Positioned(
-                          top: 8,
-                          left: 0,
-                          right: 0,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              _buildNavItem(
-                                'Medications',
-                                Icon(Icons.medication),
-                                () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => Login(),
-                                    ),
-                                  );
-                                },
-                              ),
-                              _buildNavItem(
-                                'Home',
-                                Icon(Icons.home),
-                                () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => AppHome(),
-                                    ),
-                                  );
-                                },
-                              ),
-                              _buildNavItem(
-                                'Profile',
-                                Icon(Icons.person),
-                                () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => ProfilePage(),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        // Bottom indicators positioned at the bottom
-                        Positioned(
-                          bottom: 10,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: List.generate(
-                              3,
-                              (index) => Container(
-                                width: 100,
-                                height: 5,
-                                margin: EdgeInsets.symmetric(horizontal: 10),
-                                decoration: ShapeDecoration(
-                                  color: Color(0xFFB8BFC8),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(100),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                 Custom.bottomNav(context),
                 ],
               ),
             );
@@ -269,32 +219,6 @@ class AppHome extends StatelessWidget {
                   side: BorderSide(width: 2, color: Color(0xFF00A624)),
                 ),
               ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildNavItem(String label, Widget icon, VoidCallback onPressed) {
-    return GestureDetector(
-      onTap: onPressed,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 90,
-            height: 25,
-            child: icon,
-          ),
-          SizedBox(height: 6),
-          Text(
-            label,
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 12,
-              fontFamily: 'Poppins',
-              fontWeight: FontWeight.w400,
             ),
           ),
         ],

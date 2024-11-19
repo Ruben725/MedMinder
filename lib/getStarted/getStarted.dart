@@ -39,15 +39,24 @@ class getStarted extends StatelessWidget {
             ),
 
             //Get Started Button
-           NewButton(text: 'Next', 
-                  color:Color.fromRGBO(0, 172, 226, 1),
-                  onPressed: () {Navigator.push(context,
+           Custom.newButton('Next', 
+                  Color.fromRGBO(0, 172, 226, 1),
+                  () {Navigator.push(context,
                           MaterialPageRoute(
                             builder: (context) => accountInfo(), //Goes to login page
                           ),
                     );
                    },
                   ),
+
+            Custom.newButton('Back',
+             Color.fromRGBO(217, 217, 217, 1), 
+             () {Navigator.push(context,
+                          MaterialPageRoute(
+                            builder: (context) => Login(), //Goes to login page
+                          ),
+                    );
+                   },)
             ],
           ),
           

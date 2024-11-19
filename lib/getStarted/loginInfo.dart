@@ -92,9 +92,9 @@ class _loginInfoState extends State<loginInfo> {
              const SizedBox(height: 20.0),
 
             //Login Button
-            NewButton(text: 'Login', 
-                  color:Color.fromRGBO(0, 172, 226, 100),
-                  onPressed: _login, /*() {Navigator.push(context,
+            Custom.newButton('Login', 
+                  Color.fromRGBO(0, 172, 226, 100),
+                   _login, /*() {Navigator.push(context,
                           MaterialPageRoute(
                             builder: (context) => loginInfo(), //Will take user to Homepage
                           ),
@@ -104,9 +104,9 @@ class _loginInfoState extends State<loginInfo> {
             SizedBox(height: 20.0),
 
             //Back Button
-            NewButton(text: 'Back', 
-                  color:Color.fromRGBO(217, 217, 217, 1),
-                  onPressed: () {Navigator.push(context,
+            Custom.newButton('Back', 
+                  Color.fromRGBO(217, 217, 217, 1),
+                  () {Navigator.push(context,
                           MaterialPageRoute(
                             builder: (context) => Login(),  //to Login page 
                           ),
