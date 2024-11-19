@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "317997450626",
+    "project_id": "medminder-8af5d",
+    "storage_bucket": "medminder-8af5d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:317997450626:android:74f459c379e4566453bb9b",
+        "android_client_info": {
+          "package_name": "com.example.medminder"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7RQRLtW13mXRaN4mzFoNBbXDMSPlw0Gc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

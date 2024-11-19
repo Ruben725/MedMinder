@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:medminder/custom.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:medminder/getStarted/login.dart';
-import 'package:medminder/mainApp/appHome.dart';
+import 'package:medminder/Home/home.dart';
+import 'package:medminder/getStarted/userAuth.dart';
 
 class loginInfo extends StatefulWidget {
   const loginInfo({super.key});
@@ -12,9 +14,18 @@ class loginInfo extends StatefulWidget {
 }
 
 class _loginInfoState extends State<loginInfo> {
-  //Controllers for user input
-  final unameController = TextEditingController();
+  //Controllers for user inputd
+  final auth = userAuth();
+  final emailController = TextEditingController();
   final pwController = TextEditingController();
+
+  //deletes the use of controllers
+  @override
+  void dispose() {
+    super.dispose();
+    emailController.dispose();
+    pwController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +60,7 @@ class _loginInfoState extends State<loginInfo> {
                   border: Border.all(color: Colors.black, width: 1),
                   borderRadius: BorderRadius.circular(15)),
               child: TextFormField(
-                controller: unameController,
+                controller: emailController,
                 decoration: const InputDecoration(
                   hintText: 'Username',
                   contentPadding:
@@ -81,26 +92,23 @@ class _loginInfoState extends State<loginInfo> {
             const SizedBox(height: 20.0),
 
             //Login Button
-            NewButton(
-              text: 'Login',
-              color: Color.fromRGBO(0, 172, 226, 100),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        AppHome(), //Will take user to Homepage
-                  ),
-                );
-              },
+            Custom.newButton(
+              'Login',
+              Color.fromRGBO(0, 172, 226, 100),
+              _login, /*() {Navigator.push(context,
+                          MaterialPageRoute(
+                            builder: (context) => loginInfo(), //Will take user to Homepage
+                          ),
+                    );
+                   },*/
             ),
             SizedBox(height: 20.0),
 
             //Back Button
-            NewButton(
-              text: 'Back',
-              color: Color.fromRGBO(217, 217, 217, 1),
-              onPressed: () {
+            Custom.newButton(
+              'Back',
+              Color.fromRGBO(217, 217, 217, 1),
+              () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -113,5 +121,14 @@ class _loginInfoState extends State<loginInfo> {
         ),
       ),
     );
+  }
+
+  _login() async {
+    final user = await auth.userLogin(emailController.text, pwController.text);
+    if (user != null) {
+      print("Logged In");
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => AppHome()));
+    }
   }
 }
