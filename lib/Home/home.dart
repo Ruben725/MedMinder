@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:medminder/Home/medicationsList.dart';
 import 'package:medminder/Home/settings.dart';
+import 'package:medminder/Home/scheduleInfo.dart'; // Add import for scheduleInfo
 import 'package:medminder/custom.dart';
 import 'package:intl/intl.dart';
 
@@ -184,59 +185,70 @@ class _AppHomeState extends State<AppHome> {
   }
 
   Widget _buildMedicationCard(String name, String time) {
-    return Container(
-      height: 80,
-      decoration: ShapeDecoration(
-        color: Colors.white.withOpacity(0.7),
-        shape: RoundedRectangleBorder(
-          side: BorderSide(width: 2, color: Color(0xFF00A624)),
-          borderRadius: BorderRadius.circular(15),
-        ),
-        shadows: [
-          BoxShadow(
-            color: Color(0x3F000000),
-            blurRadius: 4,
-            offset: Offset(0, 4),
+    return GestureDetector(
+      onTap: () {
+        // Navigate to scheduleInfo page and pass medication name
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => scheduleInfo(medicationName: name),
           ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Padding(
-            padding: EdgeInsets.only(left: 14),
-            child: Text(
-              name,
+        );
+      },
+      child: Container(
+        height: 80,
+        decoration: ShapeDecoration(
+          color: Colors.white.withOpacity(0.7),
+          shape: RoundedRectangleBorder(
+            side: BorderSide(width: 2, color: Color(0xFF00A624)),
+            borderRadius: BorderRadius.circular(15),
+          ),
+          shadows: [
+            BoxShadow(
+              color: Color(0x3F000000),
+              blurRadius: 4,
+              offset: Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Padding(
+              padding: EdgeInsets.only(left: 14),
+              child: Text(
+                name,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ),
+            Spacer(),
+            Text(
+              time,
               style: TextStyle(
                 fontSize: 16,
                 fontFamily: 'Poppins',
                 fontWeight: FontWeight.w400,
               ),
             ),
-          ),
-          Spacer(),
-          Text(
-            time,
-            style: TextStyle(
-              fontSize: 16,
-              fontFamily: 'Poppins',
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-          SizedBox(width: 16),
-          Padding(
-            padding: EdgeInsets.all(20),
-            child: Container(
-              width: 40,
-              height: 40,
-              decoration: ShapeDecoration(
-                color: Colors.white,
-                shape: OvalBorder(
-                  side: BorderSide(width: 2, color: Color(0xFF00A624)),
+            SizedBox(width: 16),
+            Padding(
+              padding: EdgeInsets.all(20),
+              child: Container(
+                width: 40,
+                height: 40,
+                decoration: ShapeDecoration(
+                  color: Colors.white,
+                  shape: OvalBorder(
+                    side: BorderSide(width: 2, color: Color(0xFF00A624)),
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
