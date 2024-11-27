@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:medminder/custom.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:medminder/getStarted/userAuth.dart';
+import 'package:medminder/Home/medicationInfo.dart'; // Ensure this import path is correct
 
 class MedicationsList extends StatefulWidget {
   const MedicationsList({Key? key}) : super(key: key);
@@ -17,11 +21,61 @@ class _MedicationsListState extends State<MedicationsList> {
     'Benzonatate'
   ];
 
-  void _handleSearchSubmit(String query) {
-    // Print the search input to the terminal when submitted
-    print('Search submitted: $query');
-    // Optional: Clear the search field after submission
-    _searchController.clear();
+  void _handleSearchSubmit(String query) async {
+    try {
+      CollectionReference drugDataCollection =
+          FirebaseFirestore.instance.collection('DrugData');
+
+      String capitalizedQuery = query.substring(0, 1).toUpperCase() +
+          query.substring(1).toLowerCase();
+
+      QuerySnapshot querySnapshot = await drugDataCollection
+          .where(FieldPath.documentId, isEqualTo: capitalizedQuery)
+          .get();
+
+      for (var doc in querySnapshot.docs) {
+        Map<String, dynamic>? data = doc.data() as Map<String, dynamic>?;
+        if (data != null) {
+          // Navigate to MedicationInfo with the drug data
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MedicationInfo(
+                medicationName: data['drug_name'] ?? capitalizedQuery,
+                dosage: data['dosage'] ?? 'Not specified',
+                brandName: data['brand_name'] ?? 'N/A',
+                foodInteractions:
+                    data['food_interaction'] ?? 'No known interactions',
+                foodsToAvoid: data['foods_to_avoid'] ?? [],
+                consumptionMethod: data['recommended_consumption_method'] ?? {},
+                sideEffects: data['side_effects'] ?? [],
+                summary: data['summary'] ?? 'No summary available',
+                synonyms: data['synonym'] ?? [],
+              ),
+            ),
+          );
+          return; // Exit after finding the first matching document
+        }
+      }
+
+      // If no document found, show a snackbar
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('No medication found for "$capitalizedQuery"'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+
+      _searchController.clear();
+    } catch (error) {
+      print('Error retrieving data from Firestore: $error');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error searching for medication'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
   }
 
   Widget _buildMedicationCard(String medicationName) {
