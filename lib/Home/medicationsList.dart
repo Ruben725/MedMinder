@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:medminder/getStarted/userAuth.dart';
 import 'package:medminder/Home/medicationInfo.dart'; // Ensure this import path is correct
+import 'package:medminder/Home/editMedication.dart'; // Ensure this import path is correct
 
 class MedicationsList extends StatefulWidget {
   const MedicationsList({Key? key}) : super(key: key);
@@ -79,39 +80,51 @@ class _MedicationsListState extends State<MedicationsList> {
   }
 
   Widget _buildMedicationCard(String medicationName) {
-    return Container(
-      width: double.infinity,
-      height: 80,
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: ShapeDecoration(
-        color: Colors.white.withOpacity(0.7),
-        shape: RoundedRectangleBorder(
-          side: const BorderSide(
-            width: 2,
-            color: Color(0xFF00A624),
+    return GestureDetector(
+        onTap: () {
+          // Navigate to EditMedication page when card is tapped
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => EditMedication(
+                medicationName: medicationName, // Pass the medication name
+              ),
+            ),
+          );
+        },
+        child: Container(
+          width: double.infinity,
+          height: 80,
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          decoration: ShapeDecoration(
+            color: Colors.white.withOpacity(0.7),
+            shape: RoundedRectangleBorder(
+              side: const BorderSide(
+                width: 2,
+                color: Color(0xFF00A624),
+              ),
+              borderRadius: BorderRadius.circular(15),
+            ),
+            shadows: const [
+              BoxShadow(
+                color: Color(0x3F000000),
+                blurRadius: 4,
+                offset: Offset(0, 4),
+              )
+            ],
           ),
-          borderRadius: BorderRadius.circular(15),
-        ),
-        shadows: const [
-          BoxShadow(
-            color: Color(0x3F000000),
-            blurRadius: 4,
-            offset: Offset(0, 4),
-          )
-        ],
-      ),
-      child: Center(
-        child: Text(
-          medicationName,
-          style: const TextStyle(
-            color: Colors.black,
-            fontSize: 24,
-            fontFamily: 'Poppins',
-            fontWeight: FontWeight.w400,
+          child: Center(
+            child: Text(
+              medicationName,
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 24,
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.w400,
+              ),
+            ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 
   Widget _buildSearchBar() {

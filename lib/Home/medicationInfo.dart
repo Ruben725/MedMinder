@@ -230,7 +230,7 @@ class MedicationInfo extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: items.entries
                     .map((entry) => Text(
-                          '• ${entry.key}: ${entry.value}',
+                          '• ${entry.key.replaceAll('_', ' ')}: ${entry.value}',
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 16,
