@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:medminder/Home/medicationsList.dart'; // Import the home page
+import 'package:medminder/Home/medicationsList.dart';
+import 'package:medminder/Home/newSchedule.dart';
 
 class MedicationInfo extends StatelessWidget {
   final String medicationName;
@@ -27,15 +28,11 @@ class MedicationInfo extends StatelessWidget {
 
   // Function to handle medication being taken
   void _handleMedicationAdd(BuildContext context) {
-    // Add your logic for marking medication as taken
-    // For example, you might want to:
-    // - Update a database or local storage
-    // - Log the medication intake
-    // - Check if the medication schedule is followed
-
-    // Navigate to home page and remove all previous routes
+    // Navigate to NewSchedule and pass the medication name
     Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (context) => MedicationsList()),
+      MaterialPageRoute(
+        builder: (context) => NewSchedule(medicationName: medicationName),
+      ),
       (Route<dynamic> route) => false,
     );
   }
@@ -83,10 +80,6 @@ class MedicationInfo extends StatelessWidget {
 
                       // Foods to Avoid
                       _buildListSection('Foods to Avoid:', foodsToAvoid),
-                      SizedBox(height: 16),
-
-                      // Dosage
-                      _buildInfoRow('Dosage:', dosage),
                       SizedBox(height: 16),
 
                       // Side Effects

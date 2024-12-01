@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:medminder/custom.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+//import 'package:firebase_auth/firebase_auth.dart';
 import 'package:medminder/getStarted/login.dart';
 import 'package:medminder/Home/home.dart';
 import 'package:medminder/getStarted/userAuth.dart';

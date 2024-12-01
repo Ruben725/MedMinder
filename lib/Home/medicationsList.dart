@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:medminder/custom.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:medminder/getStarted/userAuth.dart';
-import 'package:medminder/Home/medicationInfo.dart'; // Ensure this import path is correct
-import 'package:medminder/Home/editMedication.dart'; // Ensure this import path is correct
+import 'package:medminder/Home/medicationInfo.dart';
+import 'package:medminder/Home/editMedication.dart';
 
 class MedicationsList extends StatefulWidget {
   const MedicationsList({Key? key}) : super(key: key);
@@ -27,6 +26,7 @@ class _MedicationsListState extends State<MedicationsList> {
       CollectionReference drugDataCollection =
           FirebaseFirestore.instance.collection('DrugData');
 
+      // reformat the input to only the first character being capitalized to match the document id of
       String capitalizedQuery = query.substring(0, 1).toUpperCase() +
           query.substring(1).toLowerCase();
 

@@ -199,11 +199,6 @@ class _EditMedicationState extends State<EditMedication> {
                 'Foods to Avoid:', _medicationData?['foods_to_avoid'] ?? []),
             SizedBox(height: 16),
 
-            // Dosage
-            _buildInfoRow(
-                'Dosage:', _medicationData?['dosage'] ?? 'Not specified'),
-            SizedBox(height: 16),
-
             // Side Effects
             _buildListSection(
                 'Side Effects:', _medicationData?['side_effects'] ?? []),
