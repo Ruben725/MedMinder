@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:medminder/Home/medicationsList.dart';
 import 'package:medminder/getStarted/userAuth.dart';
 
@@ -38,6 +39,12 @@ class _NewScheduleState extends State<NewSchedule> {
   final List<String> _strengthUnits = ['mg', 'mcg'];
   String _selectedStrengthUnit = 'mg';
 
+  // Changed from List to single TimeOfDay
+  TimeOfDay? _medicineTime;
+
+  // Firestore instance
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   void _incrementPills() {
     setState(() {
       _numberOfPills++;
@@ -52,74 +59,133 @@ class _NewScheduleState extends State<NewSchedule> {
     });
   }
 
-  Future<void> _selectTime(BuildContext context, {int? index}) async {
+  Future<void> _selectTime(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
-      initialTime: index != null ? _medicineTimes[index] : TimeOfDay.now(),
+      initialTime: _medicineTime ?? TimeOfDay.now(),
     );
 
     if (picked != null) {
       setState(() {
-        if (index != null) {
-          _medicineTimes[index] = picked;
-        } else {
-          _medicineTimes.add(picked);
-        }
+        _medicineTime = picked;
       });
     }
   }
 
-  void _removeTime(int index) {
-    setState(() {
-      _medicineTimes.removeAt(index);
-    });
-  }
+  Future<void> _saveMedicationToFirestore(BuildContext context) async {
+    try {
+      // Validate required fields
+      if (widget.medicationName == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Medication name is required')),
+        );
+        return;
+      }
 
-  List<TimeOfDay> _medicineTimes = [];
+      if (_medicineTime == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Please select a time')),
+        );
+        return;
+      }
+
+      if (_strengthController.text.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Please enter medication strength')),
+        );
+        return;
+      }
+
+      // Determine days to take medication based on frequency
+      List<String> medicationDays = [];
+
+      switch (_selectedFrequency) {
+        case 'Daily':
+          medicationDays = _daysOfWeek;
+          break;
+
+        case 'Weekly':
+          final now = DateTime.now();
+          final currentDay = _daysOfWeek[now.weekday - 1];
+          medicationDays = [currentDay];
+          break;
+
+        case 'Selected Days':
+          medicationDays = _selectedDays;
+          break;
+
+        case 'As Needed':
+          medicationDays = [];
+          break;
+      }
+
+      // Convert medicine time to 24-hour format for storage
+      final medicineTimeString = convert24HourTo12Hour(_medicineTime!);
+
+      // Prepare medication data
+      Map<String, dynamic> medicationData = {
+        'userId': userAuth.getId(),
+        'medicationName': widget.medicationName,
+        'frequency': _selectedFrequency,
+        'days': medicationDays,
+        'numberOfPills': _numberOfPills,
+        'strength': '${_strengthController.text} $_selectedStrengthUnit',
+        'time': medicineTimeString,
+        'status': false,
+        'createdAt': FieldValue.serverTimestamp(),
+      };
+
+      // Save to Firestore
+      await _firestore.collection('MedicationSchedule').add(medicationData);
+
+      // Navigate to medications list
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => MedicationsList()),
+        (Route<dynamic> route) => false,
+      );
+
+      // Show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Medication schedule added successfully')),
+      );
+    } catch (e) {
+      // Handle any errors
+      print('Error saving medication: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to save medication schedule')),
+      );
+    }
+  }
 
   Widget _buildTimesSection() {
     return Column(
       children: [
-        Row(
-          children: [
-            IconButton(
-              icon: Icon(Icons.add, color: Color(0xFF4681F4)),
-              onPressed: () => _selectTime(context),
+        GestureDetector(
+          onTap: () => _selectTime(context),
+          child: Container(
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            decoration: BoxDecoration(
+              color: Color(0xFFD9D9D9),
+              borderRadius: BorderRadius.circular(15),
             ),
-            Text(
-              'Add Time',
-              style: TextStyle(
-                color: Color(0xFF4681F4),
-                fontSize: 24,
-                fontFamily: 'Inter',
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-          ],
-        ),
-        Column(
-          children: List.generate(_medicineTimes.length, (index) {
-            return Row(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                IconButton(
-                  icon: Icon(Icons.remove, color: Colors.red),
-                  onPressed: () => _removeTime(index),
-                ),
                 Text(
-                  _medicineTimes[index].format(context),
+                  _medicineTime != null
+                      ? _medicineTime!.format(context)
+                      : 'Select Time',
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 20,
                     fontFamily: 'Poppins',
                   ),
                 ),
-                IconButton(
-                  icon: Icon(Icons.edit, color: Colors.blue),
-                  onPressed: () => _selectTime(context, index: index),
-                ),
+                Icon(Icons.access_time, color: Color(0xFF4681F4)),
               ],
-            );
-          }),
+            ),
+          ),
         ),
       ],
     );
@@ -404,6 +470,17 @@ class _NewScheduleState extends State<NewSchedule> {
     );
   }
 
+  // Helper function to convert TimeOfDay to 12-hour format string
+  String convert24HourTo12Hour(TimeOfDay time) {
+    final hour = time.hour;
+    final minute = time.minute;
+    final amPm = hour >= 12 ? 'PM' : 'AM';
+    final convertedHour = hour % 12;
+    final displayHour = convertedHour == 0 ? 12 : convertedHour;
+
+    return '${displayHour}:${minute.toString().padLeft(2, '0')} $amPm';
+  }
+
   Widget _buildActionButtons(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -429,64 +506,7 @@ class _NewScheduleState extends State<NewSchedule> {
           SizedBox(width: 16),
           Expanded(
             child: ElevatedButton(
-              onPressed: () {
-                // Determine days to take medication based on frequency
-                List<String> medicationDays = [];
-
-                switch (_selectedFrequency) {
-                  case 'Daily':
-                    // If Daily, use all days of the week
-                    medicationDays = _daysOfWeek;
-                    break;
-
-                  case 'Weekly':
-                    // If Weekly, use the current day of the week
-                    final now = DateTime.now();
-                    final currentDay = _daysOfWeek[now.weekday - 1];
-                    medicationDays = [currentDay];
-                    break;
-
-                  case 'Selected Days':
-                    // Use already selected days
-                    medicationDays = _selectedDays;
-                    break;
-
-                  case 'As Needed':
-                    // No specific days for 'As Needed'
-                    medicationDays = [];
-                    break;
-                }
-
-                //print the id of the user, test for sending data to firebase
-                print('User ID: ${userAuth.getId()}');
-
-                // Print medication name if it was passed
-                if (widget.medicationName != null) {
-                  print('Medication: ${widget.medicationName}');
-                }
-
-                // Print all selected information
-                print('Frequency: $_selectedFrequency');
-
-                // Print medication days
-                print('Medication Days: ${medicationDays.join(', ')}');
-
-                print('Number of Pills: $_numberOfPills');
-                print(
-                    'Medicine Strength: ${_strengthController.text} $_selectedStrengthUnit');
-
-                // Print medicine times
-                print('Medicine Times:');
-                for (var time in _medicineTimes) {
-                  print('- ${time.format(context)}');
-                }
-
-                // Navigate to medications list
-                Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (context) => MedicationsList()),
-                  (Route<dynamic> route) => false,
-                );
-              },
+              onPressed: () => _saveMedicationToFirestore(context),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color(0xFF00A624).withOpacity(0.5),
                 foregroundColor: Colors.black,

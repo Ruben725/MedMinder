@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:medminder/custom.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:medminder/Home/medicationsList.dart'; // For navigation
+import 'package:medminder/getStarted/userAuth.dart'; // for userid pull for remove and edit buttons
+import 'package:medminder/Home/editSchedule.dart'; // For navigation
 
 class EditMedication extends StatefulWidget {
   final String medicationName;
@@ -96,13 +98,44 @@ class _EditMedicationState extends State<EditMedication> {
             ),
             TextButton(
               child: Text('Remove'),
-              onPressed: () {
-                // Add remove functionality here
-                // For example, remove from Firestore or local storage
-                Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (context) => MedicationsList()),
-                  (Route<dynamic> route) => false,
-                );
+              onPressed: () async {
+                try {
+                  // Get the current user's ID
+                  String? userId = userAuth.getId();
+
+                  // Reference to the MedicationSchedule collection
+                  CollectionReference medicationSchedule = FirebaseFirestore
+                      .instance
+                      .collection('MedicationSchedule');
+
+                  // Query to find the specific medication document
+                  QuerySnapshot querySnapshot = await medicationSchedule
+                      .where('userId', isEqualTo: userId)
+                      .where('medicationName', isEqualTo: widget.medicationName)
+                      .get();
+
+                  // Delete the document if found
+                  for (var doc in querySnapshot.docs) {
+                    await doc.reference.delete();
+                  }
+
+                  // Navigate back to medications list
+                  Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (context) => MedicationsList()),
+                    (Route<dynamic> route) => false,
+                  );
+
+                  // Show success message
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Medication removed successfully')),
+                  );
+                } catch (error) {
+                  // Handle any errors
+                  print('Error removing medication: $error');
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Failed to remove medication')),
+                  );
+                }
               },
             ),
           ],
@@ -217,8 +250,11 @@ class _EditMedicationState extends State<EditMedication> {
               child: Column(
                 children: [
                   _buildActionButton('Edit', Colors.grey, () {
-                    // Add edit functionality
-                    // You might want to navigate to an edit form
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => EditSchedule(
+                                medicationName: widget.medicationName)));
                   }),
                   const SizedBox(height: 16),
                   _buildActionButton('Remove', Colors.red, _removeMedication),

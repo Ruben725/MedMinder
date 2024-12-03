@@ -16,6 +16,7 @@ class _MedicationsListState extends State<MedicationsList> {
   final TextEditingController _searchController = TextEditingController();
   final List<String> _allMedications = [
     'Ibuprofen',
+    'Aspirin',
     'Lisinopril',
     'Amlodipine',
     'Benzonatate'
