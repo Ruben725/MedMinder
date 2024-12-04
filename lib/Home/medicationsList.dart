@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:medminder/Home/medicationInfo.dart';
 import 'package:medminder/Home/editMedication.dart';
+import 'package:medminder/getStarted/userAuth.dart';
 
 class MedicationsList extends StatefulWidget {
   const MedicationsList({Key? key}) : super(key: key);
@@ -17,21 +18,58 @@ class _MedicationsListState extends State<MedicationsList> {
   final ScrollController _scrollController = ScrollController();
   final ScrollController _autocompleteScrollController = ScrollController();
 
-  List<String> _allMedications = [
-    'Ibuprofen',
-    'Aspirin',
-    'Lisinopril',
-    'Amlodipine',
-    'Benzonatate'
-  ];
+  List<String> _allMedications =
+      []; // Changed from predefined list to empty list
   List<String> _searchResults = [];
   bool _showAutocomplete = false;
   List<String> _drugDataDocumentIds = [];
+  List<String> _allBrands = [];
 
   @override
   void initState() {
     super.initState();
     _fetchDrugDataDocumentIds();
+    _fetchUserMedications(); // New method to fetch user's medications
+    _fetchBrandNames();
+  }
+
+  Future<void> _fetchUserMedications() async {
+    try {
+      // Get the current user's ID
+      String? userId = userAuth.getId();
+      if (userId == null) {
+        print('No user logged in');
+        return;
+      }
+
+      // Reference to the MedicationSchedule collection
+      CollectionReference medicationScheduleCollection =
+          FirebaseFirestore.instance.collection('MedicationSchedule');
+
+      // Query medications for the current user
+      QuerySnapshot querySnapshot = await medicationScheduleCollection
+          .where('userId', isEqualTo: userId)
+          .get();
+
+      // Extract unique medication names
+      Set<String> userMedications = querySnapshot.docs
+          .map((doc) => doc['medicationName'] as String)
+          .toSet(); // Using Set to remove duplicates
+
+      setState(() {
+        _allMedications = userMedications.toList();
+      });
+    } catch (error) {
+      print('Error fetching user medications: $error');
+
+      // Optional: Show a snackbar to inform the user about the error
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error loading medications'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
   }
 
   Future<void> _fetchDrugDataDocumentIds() async {
@@ -49,9 +87,41 @@ class _MedicationsListState extends State<MedicationsList> {
     }
   }
 
+  Future<void> _fetchBrandNames() async {
+    try {
+      CollectionReference drugDataCollection =
+          FirebaseFirestore.instance.collection('DrugData');
+
+      QuerySnapshot querySnapshot = await drugDataCollection.get();
+
+      List<String> allBrands = [];
+      for (var doc in querySnapshot.docs) {
+        Map<String, dynamic>? data = doc.data() as Map<String, dynamic>?;
+        if (data != null) {
+          dynamic brandNames = data['brand_name'];
+          if (brandNames is String && brandNames.isNotEmpty) {
+            allBrands.add(brandNames);
+          } else if (brandNames is List<dynamic> && brandNames.isNotEmpty) {
+            allBrands.addAll(brandNames.map((brand) => brand.toString()));
+          }
+        }
+      }
+
+      setState(() {
+        _allBrands =
+            allBrands.toSet().toList(); // Convert to Set to remove duplicates
+      });
+    } catch (error) {
+      print('Error fetching brand names: $error');
+    }
+  }
+
   void _handleSearch(String value) {
     // Combine document IDs and predefined medications
-    List<String> allPossibleMedications = [..._drugDataDocumentIds];
+    List<String> allPossibleMedications = [
+      ..._drugDataDocumentIds,
+      ..._allBrands,
+    ];
 
     setState(() {
       if (value.isEmpty) {
@@ -67,7 +137,7 @@ class _MedicationsListState extends State<MedicationsList> {
     });
   }
 
-  void _handleSearchSubmit(String query) async {
+  Future<void> _handleSearchSubmit(String query) async {
     try {
       CollectionReference drugDataCollection =
           FirebaseFirestore.instance.collection('DrugData');
@@ -76,42 +146,88 @@ class _MedicationsListState extends State<MedicationsList> {
       String capitalizedQuery = query.substring(0, 1).toUpperCase() +
           query.substring(1).toLowerCase();
 
+      // First, check if the query matches a document ID
       QuerySnapshot querySnapshot = await drugDataCollection
           .where(FieldPath.documentId, isEqualTo: capitalizedQuery)
           .get();
 
-      for (var doc in querySnapshot.docs) {
-        Map<String, dynamic>? data = doc.data() as Map<String, dynamic>?;
-        if (data != null) {
-          // Navigate to MedicationInfo with the drug data
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => MedicationInfo(
-                medicationName: data['drug_name'] ?? capitalizedQuery,
-                dosage: data['dosage'] ?? 'Not specified',
-                brandName: data['brand_name'] ?? 'N/A',
-                foodInteractions:
-                    data['food_interaction'] ?? 'No known interactions',
-                foodsToAvoid: data['foods_to_avoid'] ?? [],
-                consumptionMethod: data['recommended_consumption_method'] ?? {},
-                sideEffects: data['side_effects'] ?? [],
-                summary: data['summary'] ?? 'No summary available',
-                synonyms: data['synonym'] ?? [],
+      if (querySnapshot.docs.isNotEmpty) {
+        for (var doc in querySnapshot.docs) {
+          Map<String, dynamic>? data = doc.data() as Map<String, dynamic>?;
+          if (data != null) {
+            // Navigate to MedicationInfo with the drug data
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MedicationInfo(
+                  medicationName: data['drug_name'] ?? capitalizedQuery,
+                  dosage: data['dosage'] ?? 'Not specified',
+                  brandName: data['brand_name'] ?? 'N/A',
+                  foodInteractions:
+                      data['food_interaction'] ?? 'No known interactions',
+                  foodsToAvoid: data['foods_to_avoid'] ?? [],
+                  consumptionMethod:
+                      data['recommended_consumption_method'] ?? {},
+                  sideEffects: data['side_effects'] ?? [],
+                  summary: data['summary'] ?? 'No summary available',
+                  synonyms: data['synonym'] ?? [],
+                ),
               ),
+            );
+            return; // Exit after finding the first matching document
+          }
+        }
+      } else {
+        // If no document found, check if the query matches a brand name
+        bool foundBrandMatch = false;
+        for (String brand in _allBrands) {
+          if (brand.toLowerCase() == query.toLowerCase()) {
+            // Navigate to MedicationInfo with the brand name
+            QuerySnapshot brandSnapshot = await drugDataCollection
+                .where('brand_name', arrayContains: brand)
+                .get();
+
+            if (brandSnapshot.docs.isNotEmpty) {
+              for (var doc in brandSnapshot.docs) {
+                Map<String, dynamic>? data =
+                    doc.data() as Map<String, dynamic>?;
+                if (data != null) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MedicationInfo(
+                        medicationName: data['drug_name'] ?? brand,
+                        dosage: data['dosage'] ?? 'Not specified',
+                        brandName: data['brand_name'] ?? 'N/A',
+                        foodInteractions:
+                            data['food_interaction'] ?? 'No known interactions',
+                        foodsToAvoid: data['foods_to_avoid'] ?? [],
+                        consumptionMethod:
+                            data['recommended_consumption_method'] ?? {},
+                        sideEffects: data['side_effects'] ?? [],
+                        summary: data['summary'] ?? 'No summary available',
+                        synonyms: data['synonym'] ?? [],
+                      ),
+                    ),
+                  );
+                  foundBrandMatch = true;
+                  break;
+                }
+              }
+            }
+          }
+        }
+
+        if (!foundBrandMatch) {
+          // If no document found and no brand match, show a snackbar
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('No medication found for "$query"'),
+              duration: Duration(seconds: 2),
             ),
           );
-          return; // Exit after finding the first matching document
         }
       }
-
-      // If no document found, show a snackbar
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('No medication found for "$capitalizedQuery"'),
-          duration: Duration(seconds: 2),
-        ),
-      );
 
       _searchController.clear();
     } catch (error) {

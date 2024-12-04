@@ -87,50 +87,65 @@ class _EditMedicationState extends State<EditMedication> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Remove Medication'),
-          content: Text('Are you sure you want to remove this medication?'),
+          title: Text(
+            'Remove Medication',
+            style: TextStyle(
+              fontSize: 24, // Customizable title font size
+              fontFamily: 'Poppins',
+            ),
+          ),
+          content: Text(
+            'Are you sure you want to remove this medication?',
+            style: TextStyle(
+              fontSize: 18, // Customizable content font size
+              fontFamily: 'Poppins',
+            ),
+          ),
           actions: <Widget>[
             TextButton(
-              child: Text('Cancel'),
+              child: Text(
+                'Cancel',
+                style: TextStyle(
+                  fontSize: 18, // Customizable action button text size
+                  fontFamily: 'Poppins',
+                ),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: Text('Remove'),
+              child: Text(
+                'Remove',
+                style: TextStyle(
+                  fontSize: 18, // Customizable action button text size
+                  fontFamily: 'Poppins',
+                  color: Colors.red,
+                ),
+              ),
               onPressed: () async {
                 try {
-                  // Get the current user's ID
+                  // Existing removal logic remains the same
                   String? userId = userAuth.getId();
 
-                  // Reference to the MedicationSchedule collection
                   CollectionReference medicationSchedule = FirebaseFirestore
                       .instance
                       .collection('MedicationSchedule');
 
-                  // Query to find the specific medication document
                   QuerySnapshot querySnapshot = await medicationSchedule
                       .where('userId', isEqualTo: userId)
                       .where('medicationName', isEqualTo: widget.medicationName)
                       .get();
 
-                  // Delete the document if found
                   for (var doc in querySnapshot.docs) {
                     await doc.reference.delete();
                   }
 
-                  // Navigate back to medications list
-                  Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (context) => MedicationsList()),
-                    (Route<dynamic> route) => false,
-                  );
-
-                  // Show success message
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Medication removed successfully')),
-                  );
+                  showPopup(
+                      context: context,
+                      icon: Icons.check_circle,
+                      message: 'Medication Removed Successfully!');
                 } catch (error) {
-                  // Handle any errors
                   print('Error removing medication: $error');
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('Failed to remove medication')),

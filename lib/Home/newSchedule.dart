@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:medminder/Home/medicationsList.dart';
 import 'package:medminder/getStarted/userAuth.dart';
+import 'package:medminder/custom.dart';
 
 class NewSchedule extends StatefulWidget {
   final String? medicationName;
@@ -138,22 +139,19 @@ class _NewScheduleState extends State<NewSchedule> {
       // Save to Firestore
       await _firestore.collection('MedicationSchedule').add(medicationData);
 
-      // Navigate to medications list
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => MedicationsList()),
-        (Route<dynamic> route) => false,
-      );
-
-      // Show success message
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Medication schedule added successfully')),
+      showPopup(
+        context: context,
+        icon: Icons.check_circle,
+        message: 'Schedule Created Successfully!',
       );
     } catch (e) {
       // Handle any errors
       print('Error saving medication: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to save medication schedule')),
-      );
+      showPopup(
+          context: context,
+          icon: Icons.cancel,
+          message: 'Failed to save medication schedule',
+          iconColor: Colors.red);
     }
   }
 
@@ -512,7 +510,7 @@ class _NewScheduleState extends State<NewSchedule> {
                 foregroundColor: Colors.black,
                 side: BorderSide(color: Color(0xFF00A624)),
               ),
-              child: Text('Done'),
+              child: Text('Create'),
             ),
           ),
         ],

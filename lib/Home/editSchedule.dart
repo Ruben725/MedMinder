@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:medminder/Home/medicationsList.dart';
 import 'package:medminder/getStarted/userAuth.dart';
+import 'package:medminder/custom.dart';
 
 class EditSchedule extends StatefulWidget {
   final String medicationName;
@@ -175,15 +176,11 @@ class _EditScheduleState extends State<EditSchedule> {
       if (_currentScheduleDocument != null) {
         await _currentScheduleDocument!.reference.update(updatedData);
 
-        // Navigate to medications list
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => MedicationsList()),
-          (Route<dynamic> route) => false,
-        );
-
-        // Show success message
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Medication schedule updated successfully')),
+        // Inside _updateMedicationSchedule method
+        showPopup(
+          context: context,
+          icon: Icons.check_circle,
+          message: 'Schedule Updated Successfully!',
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -195,6 +192,11 @@ class _EditScheduleState extends State<EditSchedule> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to update medication schedule')),
       );
+      showPopup(
+          context: context,
+          icon: Icons.cancel,
+          message: 'Failed to update medication schedule',
+          iconColor: Colors.red);
     }
   }
 
