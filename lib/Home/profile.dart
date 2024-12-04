@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:medminder/custom.dart';
-import 'package:medminder/Home/settings.dart';
 import 'package:medminder/getStarted/userAuth.dart';
 
 class profile extends StatefulWidget {  
@@ -35,12 +34,12 @@ class _profileState extends State<profile> {
                   backgroundColor: Colors.amber,
                   ),
                 
-                SizedBox(height: 10),
-                
+                SizedBox(height: 30),
+           
                 Text('Name: ${user.fname} ${user.lname}', style: TextStyle(fontFamily: 'Poppins', fontSize: 20,)),
                 Text('Gender: ${user.gender}', style: TextStyle(fontFamily: 'Poppins', fontSize: 20,)),
                 //Text('Date: ${user.dob}', style: TextStyle(fontFamily: 'Poppins', fontSize: 20,)),
-                //Text('Allergies: ${user.allergies}', style: TextStyle(fontFamily: 'Poppins', fontSize: 20,)),
+                //Text('Allergies: ${user.allergies}', style: TextStyle(fontFamily: 'Poppins', fontSize: 20,))
 
                 Spacer(),
                 Custom.bottomNav(context),
