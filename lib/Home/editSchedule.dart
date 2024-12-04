@@ -292,6 +292,168 @@ class _EditScheduleState extends State<EditSchedule> {
     );
   }
 
+  Widget _buildDivider() {
+    return Container(
+      width: double.infinity,
+      height: 2,
+      color: Color(0xFF00A624),
+    );
+  }
+
+  Widget _buildStrengthSection() {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+      decoration: BoxDecoration(
+        color: Color(0xFFD9D9D9),
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 2,
+            child: TextField(
+              controller: _strengthController,
+              keyboardType: TextInputType.number,
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}'))
+              ],
+              decoration: InputDecoration(
+                hintText: 'Enter Strength',
+                border: InputBorder.none,
+                hintStyle: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 20,
+                  fontFamily: 'Poppins',
+                ),
+              ),
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 20,
+                fontFamily: 'Poppins',
+              ),
+            ),
+          ),
+          Expanded(
+            child: DropdownButton<String>(
+              value: _selectedStrengthUnit,
+              underline: SizedBox(),
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 20,
+                fontFamily: 'Poppins',
+              ),
+              items: _strengthUnits.map((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+              onChanged: (String? newValue) {
+                setState(() {
+                  _selectedStrengthUnit = newValue!;
+                });
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _incrementPills() {
+    setState(() {
+      _numberOfPills++;
+    });
+  }
+
+  void _decrementPills() {
+    setState(() {
+      if (_numberOfPills > 1) {
+        _numberOfPills--;
+      }
+    });
+  }
+
+  Widget _buildPillCountSection() {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+      decoration: BoxDecoration(
+        color: Color(0xFFD9D9D9),
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          IconButton(
+            icon: Icon(Icons.remove, color: Colors.black),
+            onPressed: _decrementPills,
+          ),
+          Text(
+            '$_numberOfPills',
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 24,
+              fontFamily: 'Poppins',
+            ),
+          ),
+          IconButton(
+            icon: Icon(Icons.add, color: Colors.black),
+            onPressed: _incrementPills,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _selectTime(BuildContext context) async {
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: _medicineTime ?? TimeOfDay.now(),
+    );
+
+    if (picked != null) {
+      setState(() {
+        _medicineTime = picked;
+      });
+    }
+  }
+
+  Widget _buildTimesSection() {
+    return Column(
+      children: [
+        GestureDetector(
+          onTap: () => _selectTime(context),
+          child: Container(
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            decoration: BoxDecoration(
+              color: Color(0xFFD9D9D9),
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  _medicineTime != null
+                      ? _medicineTime!.format(context)
+                      : 'Select Time',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 20,
+                    fontFamily: 'Poppins',
+                  ),
+                ),
+                Icon(Icons.access_time, color: Color(0xFF4681F4)),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -306,7 +468,7 @@ class _EditScheduleState extends State<EditSchedule> {
                     SizedBox(height: 40),
                     Center(
                       child: Text(
-                        'Edit\nMedication Schedule',
+                        'Edit Schedule',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Colors.black,
@@ -320,6 +482,72 @@ class _EditScheduleState extends State<EditSchedule> {
                     // Add similar sections for Frequency, Number of Pills, etc.
                     // from NewSchedule, implementing each with similar logic
                     // Include conditional sections like in NewSchedule
+                    _buildDivider(),
+                    SizedBox(height: 20),
+                    Text(
+                      'Frequency',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 24,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    _buildFrequencyDropdown(),
+
+                    // Conditionally show days selection
+                    if (_currentFrequency == 'Selected Days') ...[
+                      SizedBox(height: 20),
+                      Text(
+                        'Select Days',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 24,
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      _buildDaysSelectionSection(),
+                    ],
+
+                    SizedBox(height: 20),
+                    Text(
+                      'Number of Pills',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 24,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    _buildPillCountSection(),
+                    SizedBox(height: 20),
+                    Text(
+                      'Medicine Strength',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 24,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    _buildStrengthSection(),
+                    SizedBox(height: 20),
+                    Text(
+                      'Times',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 24,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    _buildTimesSection(),
                   ],
                 ),
               ),
