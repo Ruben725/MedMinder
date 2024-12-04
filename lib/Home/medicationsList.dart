@@ -14,20 +14,65 @@ class MedicationsList extends StatefulWidget {
 
 class _MedicationsListState extends State<MedicationsList> {
   final TextEditingController _searchController = TextEditingController();
-  final List<String> _allMedications = [
+  final ScrollController _scrollController = ScrollController();
+  final ScrollController _autocompleteScrollController = ScrollController();
+
+  List<String> _allMedications = [
     'Ibuprofen',
     'Aspirin',
     'Lisinopril',
     'Amlodipine',
     'Benzonatate'
   ];
+  List<String> _searchResults = [];
+  bool _showAutocomplete = false;
+  List<String> _drugDataDocumentIds = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchDrugDataDocumentIds();
+  }
+
+  Future<void> _fetchDrugDataDocumentIds() async {
+    try {
+      CollectionReference drugDataCollection =
+          FirebaseFirestore.instance.collection('DrugData');
+
+      QuerySnapshot querySnapshot = await drugDataCollection.get();
+
+      setState(() {
+        _drugDataDocumentIds = querySnapshot.docs.map((doc) => doc.id).toList();
+      });
+    } catch (error) {
+      print('Error fetching DrugData document IDs: $error');
+    }
+  }
+
+  void _handleSearch(String value) {
+    // Combine document IDs and predefined medications
+    List<String> allPossibleMedications = [..._drugDataDocumentIds];
+
+    setState(() {
+      if (value.isEmpty) {
+        _searchResults = [];
+        _showAutocomplete = false;
+      } else {
+        _searchResults = allPossibleMedications
+            .where((medication) =>
+                medication.toLowerCase().contains(value.toLowerCase()))
+            .toList();
+        _showAutocomplete = true;
+      }
+    });
+  }
 
   void _handleSearchSubmit(String query) async {
     try {
       CollectionReference drugDataCollection =
           FirebaseFirestore.instance.collection('DrugData');
 
-      // reformat the input to only the first character being capitalized to match the document id of
+      // Reformat the input to only the first character being capitalized to match the document id
       String capitalizedQuery = query.substring(0, 1).toUpperCase() +
           query.substring(1).toLowerCase();
 
@@ -80,88 +125,63 @@ class _MedicationsListState extends State<MedicationsList> {
     }
   }
 
-  Widget _buildMedicationCard(String medicationName) {
-    return GestureDetector(
-        onTap: () {
-          // Navigate to EditMedication page when card is tapped
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => EditMedication(
-                medicationName: medicationName, // Pass the medication name
+  Widget _buildSearchAutocomplete() {
+    return _showAutocomplete && _searchResults.isNotEmpty
+        ? Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            constraints: BoxConstraints(
+              maxHeight: 200,
+            ),
+            child: RawScrollbar(
+              thumbColor: Colors.grey.withOpacity(0.5),
+              radius: const Radius.circular(20),
+              thickness: 4,
+              controller: _autocompleteScrollController,
+              child: ListView.separated(
+                controller: _autocompleteScrollController,
+                shrinkWrap: true,
+                itemCount: _searchResults.length,
+                separatorBuilder: (context, index) => const Divider(
+                  height: 1,
+                  color: Colors.grey,
+                ),
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 4,
+                    ),
+                    title: Text(
+                      _searchResults[index],
+                      style: const TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 16,
+                      ),
+                    ),
+                    onTap: () {
+                      _searchController.text = _searchResults[index];
+                      _handleSearchSubmit(_searchResults[index]);
+                      setState(() {
+                        _showAutocomplete = false;
+                      });
+                    },
+                  );
+                },
               ),
             ),
-          );
-        },
-        child: Container(
-          width: double.infinity,
-          height: 80,
-          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          decoration: ShapeDecoration(
-            color: Colors.white.withOpacity(0.7),
-            shape: RoundedRectangleBorder(
-              side: const BorderSide(
-                width: 2,
-                color: Color(0xFF00A624),
-              ),
-              borderRadius: BorderRadius.circular(15),
-            ),
-            shadows: const [
-              BoxShadow(
-                color: Color(0x3F000000),
-                blurRadius: 4,
-                offset: Offset(0, 4),
-              )
-            ],
-          ),
-          child: Center(
-            child: Text(
-              medicationName,
-              style: const TextStyle(
-                color: Colors.black,
-                fontSize: 24,
-                fontFamily: 'Poppins',
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-          ),
-        ));
-  }
-
-  Widget _buildSearchBar() {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16),
-      child: Container(
-        height: 40,
-        decoration: ShapeDecoration(
-          color: Colors.white,
-          shape: RoundedRectangleBorder(
-            side: BorderSide(width: 2, color: Color(0xFF00ABE1)),
-            borderRadius: BorderRadius.circular(15),
-          ),
-        ),
-        child: TextField(
-          controller: _searchController,
-          decoration: InputDecoration(
-            hintText: 'Search',
-            hintStyle: TextStyle(
-              color: Colors.black.withOpacity(0.5),
-              fontSize: 16,
-              fontFamily: 'Poppins',
-              fontWeight: FontWeight.w400,
-            ),
-            prefixIcon: Icon(Icons.search, color: Color(0xFF00ABE1)),
-            border: InputBorder.none,
-            contentPadding: EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 8,
-            ),
-          ),
-          onSubmitted: _handleSearchSubmit,
-          textInputAction: TextInputAction.search,
-        ),
-      ),
-    );
+          )
+        : const SizedBox.shrink();
   }
 
   @override
@@ -199,7 +219,44 @@ class _MedicationsListState extends State<MedicationsList> {
                   ),
 
                   // Search Bar
-                  _buildSearchBar(),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: Container(
+                      height: 40,
+                      decoration: ShapeDecoration(
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide(width: 2, color: Color(0xFF00ABE1)),
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                      ),
+                      child: TextField(
+                        controller: _searchController,
+                        decoration: InputDecoration(
+                          hintText: 'Search',
+                          hintStyle: TextStyle(
+                            color: Colors.black.withOpacity(0.5),
+                            fontSize: 16,
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w400,
+                          ),
+                          prefixIcon:
+                              Icon(Icons.search, color: Color(0xFF00ABE1)),
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
+                        ),
+                        onChanged: _handleSearch,
+                        onSubmitted: _handleSearchSubmit,
+                        textInputAction: TextInputAction.search,
+                      ),
+                    ),
+                  ),
+
+                  // Autocomplete Suggestions
+                  _buildSearchAutocomplete(),
 
                   // Medications List
                   Expanded(
@@ -222,9 +279,60 @@ class _MedicationsListState extends State<MedicationsList> {
     );
   }
 
+  Widget _buildMedicationCard(String medicationName) {
+    return GestureDetector(
+      onTap: () {
+        // Navigate to EditMedication page when card is tapped
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => EditMedication(
+              medicationName: medicationName, // Pass the medication name
+            ),
+          ),
+        );
+      },
+      child: Container(
+        width: double.infinity,
+        height: 80,
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: ShapeDecoration(
+          color: Colors.white.withOpacity(0.7),
+          shape: RoundedRectangleBorder(
+            side: const BorderSide(
+              width: 2,
+              color: Color(0xFF00A624),
+            ),
+            borderRadius: BorderRadius.circular(15),
+          ),
+          shadows: const [
+            BoxShadow(
+              color: Color(0x3F000000),
+              blurRadius: 4,
+              offset: Offset(0, 4),
+            )
+          ],
+        ),
+        child: Center(
+          child: Text(
+            medicationName,
+            style: const TextStyle(
+              color: Colors.black,
+              fontSize: 24,
+              fontFamily: 'Poppins',
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   void dispose() {
     _searchController.dispose();
+    _scrollController.dispose();
+    _autocompleteScrollController.dispose();
     super.dispose();
   }
 }
