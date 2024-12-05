@@ -25,7 +25,7 @@ class MedMinder extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false, //Removes Demo Banner
       theme: ThemeData(scaffoldBackgroundColor: Colors.white,), // Makes every page Scaffold background white
-      home: SplashScreen(), //Starts app at getStarted page... For now
+      home: notiTest(), //Starts app at getStarted page... For now
     );
   }
 }
