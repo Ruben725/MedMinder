@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:medminder/custom.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:medminder/Home/medicationInfo.dart';
 import 'package:medminder/Home/editMedication.dart';
 import 'package:medminder/getStarted/userAuth.dart';
@@ -19,7 +18,7 @@ class _MedicationsListState extends State<MedicationsList> {
   final ScrollController _autocompleteScrollController = ScrollController();
 
   List<String> _allMedications =
-      []; // Changed from predefined list to empty list
+      []; // used to contain all user medication for display; previously for testing
   List<String> _searchResults = [];
   bool _showAutocomplete = false;
   List<String> _drugDataDocumentIds = [];
@@ -62,7 +61,7 @@ class _MedicationsListState extends State<MedicationsList> {
     } catch (error) {
       print('Error fetching user medications: $error');
 
-      // Optional: Show a snackbar to inform the user about the error
+      // Show a snackbar to inform the user about the error
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Error loading medications'),
@@ -117,7 +116,7 @@ class _MedicationsListState extends State<MedicationsList> {
   }
 
   void _handleSearch(String value) {
-    // Combine document IDs and predefined medications
+    // allows search by drug name and by brand name
     List<String> allPossibleMedications = [
       ..._drugDataDocumentIds,
       ..._allBrands,

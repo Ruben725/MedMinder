@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:medminder/Home/medicationsList.dart';
 import 'package:medminder/Home/newSchedule.dart';
+import 'package:medminder/custom.dart';
 
 class MedicationInfo extends StatelessWidget {
   final String medicationName;
@@ -66,32 +67,33 @@ class MedicationInfo extends StatelessWidget {
                       SizedBox(height: 16),
 
                       // Summary
-                      _buildInfoSection('Information:', summary),
+                      Custom.buildInfoSection('Information:', summary),
                       SizedBox(height: 16),
 
                       // Consumption Method
-                      _buildMapSection(
+                      Custom.buildMapSection(
                           'Recommended Consumption:', consumptionMethod),
                       SizedBox(height: 16),
 
                       // Food Interactions
-                      _buildInfoSection('Food Interactions:', foodInteractions),
+                      Custom.buildInfoSection(
+                          'Food Interactions:', foodInteractions),
                       SizedBox(height: 16),
 
                       // Foods to Avoid
-                      _buildListSection('Foods to Avoid:', foodsToAvoid),
+                      Custom.buildListSection('Foods to Avoid:', foodsToAvoid),
                       SizedBox(height: 16),
 
                       // Side Effects
-                      _buildListSection('Side Effects:', sideEffects),
+                      Custom.buildListSection('Side Effects:', sideEffects),
                       SizedBox(height: 16),
 
                       // Brand Name
-                      _buildListSection('Brand Name:', brandName),
+                      Custom.buildListSection('Brand Name:', brandName),
                       SizedBox(height: 16),
 
                       // Synonyms
-                      _buildListSection('Synonyms:', synonyms),
+                      Custom.buildListSection('Synonyms:', synonyms),
                     ],
                   ),
                 ),
@@ -245,6 +247,7 @@ class MedicationInfo extends StatelessWidget {
     );
   }
 
+  // creates the back and Add Schedule buttons used for medInfo page navigation
   Widget _buildActionButtons(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,

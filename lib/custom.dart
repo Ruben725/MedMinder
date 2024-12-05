@@ -151,6 +151,115 @@ class Custom {
       ),
     );
   }
+
+  // extracting duplicate widget builds used in displaying medication data
+  static Widget buildInfoSection(String title, String content) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 18,
+            fontFamily: 'Poppins',
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        SizedBox(height: 8),
+        Text(
+          content,
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 16,
+            fontFamily: 'Poppins',
+          ),
+        ),
+      ],
+    );
+  }
+
+  static Widget buildListSection(String title, List items) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 18,
+            fontFamily: 'Poppins',
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        SizedBox(height: 8),
+        items.isNotEmpty
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: items
+                    .map((item) => Text(
+                          '• $item',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                            fontFamily: 'Poppins',
+                          ),
+                        ))
+                    .toList(),
+              )
+            : Text(
+                'No items listed',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 16,
+                  fontFamily: 'Poppins',
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+      ],
+    );
+  }
+
+  static Widget buildMapSection(String title, Map items) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 18,
+            fontFamily: 'Poppins',
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        SizedBox(height: 8),
+        items.isNotEmpty
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: items.entries
+                    .map((entry) => Text(
+                          '• ${entry.key.replaceAll('_', ' ')}: ${entry.value}',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                            fontFamily: 'Poppins',
+                          ),
+                        ))
+                    .toList(),
+              )
+            : Text(
+                'No consumption method details available',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 16,
+                  fontFamily: 'Poppins',
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+      ],
+    );
+  }
 }
 
 class buildNavItem extends StatelessWidget {

@@ -226,39 +226,40 @@ class _EditMedicationState extends State<EditMedication> {
             ),
             const SizedBox(height: 16),
             // Summary
-            _buildInfoSection('Information:',
+            Custom.buildInfoSection('Information:',
                 _medicationData?['summary'] ?? 'No summary available'),
             SizedBox(height: 16),
 
             // Consumption Method
-            _buildMapSection('Recommended Consumption:',
+            Custom.buildMapSection('Recommended Consumption:',
                 _medicationData?['recommended_consumption_method'] ?? {}),
             SizedBox(height: 16),
 
             // Food Interactions
-            _buildInfoSection(
+            Custom.buildInfoSection(
                 'Food Interactions:',
                 _medicationData?['food_interaction'] ??
                     'No known interactions'),
             SizedBox(height: 16),
 
             // Foods to Avoid
-            _buildListSection(
+            Custom.buildListSection(
                 'Foods to Avoid:', _medicationData?['foods_to_avoid'] ?? []),
             SizedBox(height: 16),
 
             // Side Effects
-            _buildListSection(
+            Custom.buildListSection(
                 'Side Effects:', _medicationData?['side_effects'] ?? []),
             SizedBox(height: 16),
 
             // Brand Name
-            _buildListSection(
+            Custom.buildListSection(
                 'Brand Name:', _medicationData?['brand_name'] ?? []),
             SizedBox(height: 16),
 
             // Synonyms
-            _buildListSection('Synonyms:', _medicationData?['synonym'] ?? []),
+            Custom.buildListSection(
+                'Synonyms:', _medicationData?['synonym'] ?? []),
 
             const SizedBox(height: 32),
             Center(
@@ -280,148 +281,6 @@ class _EditMedicationState extends State<EditMedication> {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildInfoRow(String label, String value) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(
-            color: Colors.black,
-            fontSize: 24,
-            fontFamily: 'Poppins',
-            fontWeight: FontWeight.w400,
-          ),
-        ),
-        Text(
-          value,
-          style: const TextStyle(
-            color: Colors.black,
-            fontSize: 18,
-            fontFamily: 'Poppins',
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildInfoSection(String label, String value) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(
-            color: Colors.black,
-            fontSize: 18,
-            fontFamily: 'Poppins',
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        const SizedBox(height: 8),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            value,
-            style: const TextStyle(
-              color: Colors.black,
-              fontSize: 16,
-              fontFamily: 'Poppins',
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildMapSection(String title, Map items) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 18,
-            fontFamily: 'Poppins',
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        SizedBox(height: 8),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: items.isNotEmpty
-              ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: items.entries
-                      .map((entry) => Text(
-                            '• ${entry.key.replaceAll('_', ' ')}: ${entry.value}',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 16,
-                              fontFamily: 'Poppins',
-                            ),
-                          ))
-                      .toList(),
-                )
-              : Text(
-                  'No consumption method details available',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 16,
-                    fontFamily: 'Poppins',
-                    fontStyle: FontStyle.italic,
-                  ),
-                ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildListSection(String label, List items) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(
-            color: Colors.black,
-            fontSize: 18,
-            fontFamily: 'Poppins',
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        const SizedBox(height: 8),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: items.isNotEmpty
-              ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: items
-                      .map((item) => Text(
-                            '• $item',
-                            style: const TextStyle(
-                              color: Colors.black,
-                              fontSize: 16,
-                              fontFamily: 'Poppins',
-                            ),
-                          ))
-                      .toList(),
-                )
-              : Text(
-                  'No items listed',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 16,
-                    fontFamily: 'Poppins',
-                    fontStyle: FontStyle.italic,
-                  ),
-                ),
-        ),
-      ],
     );
   }
 
