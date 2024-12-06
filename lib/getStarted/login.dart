@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:medminder/custom.dart';
 import 'package:medminder/getStarted/loginInfo.dart';
-import 'package:medminder/getStarted/accountInfo.dart';
+import 'package:medminder/getStarted/getStarted.dart';
 
 
 class Login extends StatelessWidget {
@@ -35,9 +35,9 @@ class Login extends StatelessWidget {
            SizedBox(height: 40.0),
 
           //Login Button
-           NewButton(text: 'Login', 
-                  color:Color.fromRGBO(0, 172, 226, 1),
-                  onPressed: () {Navigator.push(context,
+           Custom.newButton('Login', 
+                 Color.fromRGBO(0, 172, 226, 1),
+                  () {Navigator.push(context,
                           MaterialPageRoute(
                             builder: (context) => loginInfo(), //Will go to login Info page
                           ),
@@ -48,11 +48,11 @@ class Login extends StatelessWidget {
             SizedBox(height: 20.0),
 
             //Create Account Button
-            NewButton(text: 'Create Account', 
-                  color:Color.fromRGBO(217, 217, 217, 1),
-                  onPressed: () {Navigator.push(context,
+            Custom.newButton('Create Account', 
+                  Color.fromRGBO(217, 217, 217, 1),
+                   () {Navigator.push(context,
                           MaterialPageRoute(
-                            builder: (context) => accountInfo(), //will to user to account setup
+                            builder: (context) => getStarted(), //will to user to account setup
                           ),
                     );
                    },

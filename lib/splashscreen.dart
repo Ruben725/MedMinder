@@ -1,4 +1,6 @@
 import "package:flutter/material.dart";
+import "package:medminder/getStarted/login.dart";
+import 'dart:async';
 //import "package:medminder/assets/images/MedMinderLogo.png";
 
 class SplashScreen extends StatefulWidget{
@@ -8,8 +10,18 @@ class SplashScreen extends StatefulWidget{
 
 class SplashScreenState extends State<SplashScreen>{
   @override
+  void initState() {
+    super.initState();
+    Timer(Duration(seconds: 4),() {
+      Navigator.pushReplacement(
+        context, 
+        MaterialPageRoute(builder: (context) => Login()),
+        );
+    });
+  }
+
+  @override
   Widget build(BuildContext context){
-    // ignore: prefer_const_constructors
     return Scaffold(
       body: Center(
         child:Image.asset('assets/images/MedMinderLogo.png'),
