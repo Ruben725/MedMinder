@@ -90,14 +90,14 @@ class _EditMedicationState extends State<EditMedication> {
           title: Text(
             'Remove Medication',
             style: TextStyle(
-              fontSize: 24, // Customizable title font size
+              fontSize: 24,
               fontFamily: 'Poppins',
             ),
           ),
           content: Text(
             'Are you sure you want to remove this medication?',
             style: TextStyle(
-              fontSize: 18, // Customizable content font size
+              fontSize: 18,
               fontFamily: 'Poppins',
             ),
           ),
@@ -106,7 +106,7 @@ class _EditMedicationState extends State<EditMedication> {
               child: Text(
                 'Cancel',
                 style: TextStyle(
-                  fontSize: 18, // Customizable action button text size
+                  fontSize: 18,
                   fontFamily: 'Poppins',
                 ),
               ),
@@ -118,14 +118,13 @@ class _EditMedicationState extends State<EditMedication> {
               child: Text(
                 'Remove',
                 style: TextStyle(
-                  fontSize: 18, // Customizable action button text size
+                  fontSize: 18,
                   fontFamily: 'Poppins',
                   color: Colors.red,
                 ),
               ),
               onPressed: () async {
                 try {
-                  // Existing removal logic remains the same
                   String? userId = userAuth.getId();
 
                   CollectionReference medicationSchedule = FirebaseFirestore
@@ -225,42 +224,28 @@ class _EditMedicationState extends State<EditMedication> {
               thickness: 2,
             ),
             const SizedBox(height: 16),
-            // Summary
             Custom.buildInfoSection('Information:',
                 _medicationData?['summary'] ?? 'No summary available'),
             SizedBox(height: 16),
-
-            // Consumption Method
             Custom.buildMapSection('Recommended Consumption:',
                 _medicationData?['recommended_consumption_method'] ?? {}),
             SizedBox(height: 16),
-
-            // Food Interactions
             Custom.buildInfoSection(
                 'Food Interactions:',
                 _medicationData?['food_interaction'] ??
                     'No known interactions'),
             SizedBox(height: 16),
-
-            // Foods to Avoid
             Custom.buildListSection(
                 'Foods to Avoid:', _medicationData?['foods_to_avoid'] ?? []),
             SizedBox(height: 16),
-
-            // Side Effects
             Custom.buildListSection(
                 'Side Effects:', _medicationData?['side_effects'] ?? []),
             SizedBox(height: 16),
-
-            // Brand Name
             Custom.buildListSection(
                 'Brand Name:', _medicationData?['brand_name'] ?? []),
             SizedBox(height: 16),
-
-            // Synonyms
             Custom.buildListSection(
                 'Synonyms:', _medicationData?['synonym'] ?? []),
-
             const SizedBox(height: 32),
             Center(
               child: Column(

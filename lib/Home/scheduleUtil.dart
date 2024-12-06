@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class ScheduleUtils {
-  // Common list of frequency options
   static final List<String> frequencyOptions = [
     'Daily',
     'Weekly',
@@ -10,7 +9,6 @@ class ScheduleUtils {
     'As Needed'
   ];
 
-  // Days of the week
   static final List<String> daysOfWeek = [
     'Monday',
     'Tuesday',
@@ -21,7 +19,6 @@ class ScheduleUtils {
     'Sunday'
   ];
 
-  // Strength units
   static final List<String> strengthUnits = ['mg', 'mcg'];
 
   // Time conversion method

@@ -17,7 +17,7 @@ class NewSchedule extends StatefulWidget {
 class newScheduleState extends State<NewSchedule> {
   String selectedFrequency = 'Daily';
 
-  // Days of the week selection
+  // Setting variable or pulling them from other files
   final List<String> daysOfWeek = ScheduleUtils.daysOfWeek;
   List<String> selectedDays = [];
 
@@ -25,7 +25,6 @@ class newScheduleState extends State<NewSchedule> {
   final TextEditingController strengthController = TextEditingController();
   String selectedStrengthUnit = 'mg';
 
-  // Changed from List to single TimeOfDay
   TimeOfDay? medicineTime;
 
   // Firestore instance

@@ -27,7 +27,6 @@ class MedicationInfo extends StatelessWidget {
     required this.synonyms,
   }) : super(key: key);
 
-  // Function to handle medication being taken
   void _handleMedicationAdd(BuildContext context) {
     // Navigate to NewSchedule and pass the medication name
     Navigator.of(context).pushAndRemoveUntil(
@@ -65,34 +64,20 @@ class MedicationInfo extends StatelessWidget {
                       SizedBox(height: 16),
                       Divider(color: Color(0xFF00A624), thickness: 2),
                       SizedBox(height: 16),
-
-                      // Summary
                       Custom.buildInfoSection('Information:', summary),
                       SizedBox(height: 16),
-
-                      // Consumption Method
                       Custom.buildMapSection(
                           'Recommended Consumption:', consumptionMethod),
                       SizedBox(height: 16),
-
-                      // Food Interactions
                       Custom.buildInfoSection(
                           'Food Interactions:', foodInteractions),
                       SizedBox(height: 16),
-
-                      // Foods to Avoid
                       Custom.buildListSection('Foods to Avoid:', foodsToAvoid),
                       SizedBox(height: 16),
-
-                      // Side Effects
                       Custom.buildListSection('Side Effects:', sideEffects),
                       SizedBox(height: 16),
-
-                      // Brand Name
                       Custom.buildListSection('Brand Name:', brandName),
                       SizedBox(height: 16),
-
-                      // Synonyms
                       Custom.buildListSection('Synonyms:', synonyms),
                     ],
                   ),
@@ -108,142 +93,6 @@ class MedicationInfo extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildInfoRow(String label, String value) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 18,
-            fontFamily: 'Poppins',
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        Expanded(
-          child: Text(
-            value,
-            textAlign: TextAlign.right,
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 16,
-              fontFamily: 'Poppins',
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildInfoSection(String title, String content) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 18,
-            fontFamily: 'Poppins',
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        SizedBox(height: 8),
-        Text(
-          content,
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 16,
-            fontFamily: 'Poppins',
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildListSection(String title, List items) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 18,
-            fontFamily: 'Poppins',
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        SizedBox(height: 8),
-        items.isNotEmpty
-            ? Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: items
-                    .map((item) => Text(
-                          '• $item',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 16,
-                            fontFamily: 'Poppins',
-                          ),
-                        ))
-                    .toList(),
-              )
-            : Text(
-                'No items listed',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 16,
-                  fontFamily: 'Poppins',
-                  fontStyle: FontStyle.italic,
-                ),
-              ),
-      ],
-    );
-  }
-
-  Widget _buildMapSection(String title, Map items) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 18,
-            fontFamily: 'Poppins',
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        SizedBox(height: 8),
-        items.isNotEmpty
-            ? Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: items.entries
-                    .map((entry) => Text(
-                          '• ${entry.key.replaceAll('_', ' ')}: ${entry.value}',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 16,
-                            fontFamily: 'Poppins',
-                          ),
-                        ))
-                    .toList(),
-              )
-            : Text(
-                'No consumption method details available',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 16,
-                  fontFamily: 'Poppins',
-                  fontStyle: FontStyle.italic,
-                ),
-              ),
-      ],
     );
   }
 

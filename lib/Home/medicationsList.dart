@@ -28,7 +28,7 @@ class _MedicationsListState extends State<MedicationsList> {
   void initState() {
     super.initState();
     _fetchDrugDataDocumentIds();
-    _fetchUserMedications(); // New method to fetch user's medications
+    _fetchUserMedications();
     _fetchBrandNames();
   }
 
@@ -383,7 +383,7 @@ class _MedicationsListState extends State<MedicationsList> {
                     ),
                   ),
 
-                  // Bottom Navigation (matching AppHome)
+                  // Bottom Navigation
                   Custom.bottomNav(context),
                 ],
               ),

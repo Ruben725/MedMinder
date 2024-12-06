@@ -55,21 +55,18 @@ class _EditScheduleState extends State<EditSchedule> {
         setState(() {
           currentScheduleDocument = scheduleDoc;
 
-          // Populate fields from Firestore data
+          // Populate fields using Firestore data
           currentFrequency = scheduleDoc['frequency'] ?? 'Daily';
           numberOfPills = scheduleDoc['numberOfPills'] ?? 1;
 
-          // Parse strength
           String strengthWithUnit = scheduleDoc['strength'] ?? '1 mg';
           List<String> strengthParts = strengthWithUnit.split(' ');
           strengthController.text = strengthParts[0];
           selectedStrengthUnit = strengthParts[1];
 
-          // Parse time
           TimeOfDay parsedTime = _parseTimeString(scheduleDoc['time']);
           medicineTime = parsedTime;
 
-          // Populate selected days
           selectedDays = List<String>.from(scheduleDoc['days'] ?? []);
         });
       } else {
@@ -162,7 +159,7 @@ class _EditScheduleState extends State<EditSchedule> {
       if (currentScheduleDocument != null) {
         await currentScheduleDocument!.reference.update(updatedData);
 
-        // Inside _updateMedicationSchedule method
+        // Show confirmation of successful update
         showPopup(
           context: context,
           icon: Icons.check_circle,

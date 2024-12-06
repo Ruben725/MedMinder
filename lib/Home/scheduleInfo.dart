@@ -254,18 +254,37 @@ class _scheduleInfoState extends State<scheduleInfo> {
     );
   }
 
-  void _handleMedicationTaken(BuildContext context) {
-    // Add your logic for marking medication as taken
-    // For example, you might want to:
-    // - Update a database or local storage
-    // - Log the medication intake
-    // - Check if the medication schedule is followed
+  void _handleMedicationTaken(BuildContext context) async {
+    try {
+      // Check if we have a current schedule document
+      if (currentScheduleDocument != null) {
+        // Get the document reference
+        DocumentReference docRef = currentScheduleDocument!.reference;
 
-    // Show a confirmation
-    showPopup(
-        context: context,
-        icon: Icons.check_circle,
-        message: '${widget.medicationName} medication\nhas been taken');
+        // Update the document to mark medication as taken
+        await docRef.update({
+          'status': true,
+          'lastTakenTimestamp': FieldValue.serverTimestamp(),
+        });
+
+        // Show confirmation popup
+        showPopup(
+          context: context,
+          icon: Icons.check_circle,
+          message: '${widget.medicationName} medication\nhas been taken',
+        );
+      } else {
+        // If no document found, show an error
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('No medication schedule found')),
+        );
+      }
+    } catch (error) {
+      print('Error marking medication as taken: $error');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to mark medication as taken')),
+      );
+    }
   }
 }
 
