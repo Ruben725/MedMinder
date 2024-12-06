@@ -41,7 +41,7 @@ class _notiTestState extends State<notiTest> {
                             builder: (context) => NewSchedule(), //Goes to login page
                           ),
                     );
-                   },)
+                   },),
 
           ],
         ),

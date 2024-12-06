@@ -4,7 +4,6 @@ import 'package:timezone/timezone.dart' as tz;
 class notificationRem{
 
   static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-
   static Future<void> onDidReceiveNotification(NotificationResponse) async {}
 
   static Future<void> init() async{
@@ -61,6 +60,17 @@ class notificationRem{
       uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
       matchDateTimeComponents: DateTimeComponents.dateAndTime,
     );
+  }
+
+  static Future<void> _showFullScreen() async {
+    const AndroidNotificationDetails androidPlatformChannelSpecifics = 
+      AndroidNotificationDetails(
+        'full_screen', 
+        'Full Screen',
+        channelDescription: 'full screen notification',
+        importance: Importance.max,
+        priority: Priority.high,
+        fullScreenIntent: true,);
   }
 
 }
