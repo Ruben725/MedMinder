@@ -17,8 +17,8 @@ class _AppHomeState extends State<AppHome> {
   final List<Map<String, String>> medications = [
     {'name': 'Ibuprofen', 'time': '11:00 AM'},
     {'name': 'Lisinopril', 'time': '12:30 PM'},
-    {'name': 'Amlodipine', 'time': '4:30 PM'},
-    {'name': 'Benzonatate', 'time': '7:00 PM'},
+    {'name': 'Aspirin', 'time': '4:30 PM'},
+    {'name': 'Furosemide', 'time': '7:00 PM'}
   ];
 
   @override
