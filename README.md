@@ -19,6 +19,7 @@ https://www.oracle.com/java/technologies/downloads/?er=221886
 
 **Instructions to run MedMinder:**
 VS code was used so install the flutter and dart extensions. Make sure the android studio downloaded is the one listed above since newer versions may not be compatible since they automatically have java 21 built in which may cause issues even if you have correct java installed. Java 17 and below should be compatible with our project but to guarantee it working with no issues java 8 is recommended. If you already have for example java 11, you would have to go into the build.gradle file in android/app and make sure to change the numbers in the following code section to match your java to look like this:
+    
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
