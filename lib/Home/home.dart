@@ -291,7 +291,7 @@ class _AppHomeState extends State<AppHome> {
         if (scheduledTime.isBefore(DateTime.now())) {
           // Scheduled time has passed and status is false, show red
           borderColor = Color(0xFFF44336);
-          statusIcon = Icons.warning;
+          statusIcon = Icons.error;
         } else {
           // Scheduled time is in the future and status is false, show gray
           borderColor = Color(0xFF808080);

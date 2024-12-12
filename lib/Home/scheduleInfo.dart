@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:medminder/Home/home.dart';
 import 'package:medminder/getStarted/userAuth.dart';
+import 'package:medminder/custom.dart';
 
 class scheduleInfo extends StatefulWidget {
   final String medicationName;
@@ -91,26 +92,26 @@ class _scheduleInfoState extends State<scheduleInfo> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            _buildInfoRow('Dosage:',
+                            Custom.buildInfoSection('Dosage:',
                                 currentScheduleDocument?['strength'] ?? 'N/A'),
                             SizedBox(height: 18),
-                            _buildInfoRow('Frequency:',
-                                currentScheduleDocument?['frequency'] ?? 'N/A'),
-                            SizedBox(height: 18),
-                            _buildInfoRow('Time:',
+                            Custom.buildInfoSection('Time:',
                                 currentScheduleDocument?['time'] ?? 'N/A'),
+                            SizedBox(height: 18),
+                            Custom.buildInfoSection(
+                                'Number of Pills:',
+                                currentScheduleDocument?['numberOfPills']
+                                        ?.toString() ??
+                                    'N/A'),
+                            SizedBox(height: 18),
+                            Custom.buildInfoSection('Frequency:',
+                                currentScheduleDocument?['frequency'] ?? 'N/A'),
                             SizedBox(height: 18),
                             if (currentScheduleDocument?['frequency'] ==
                                 'Selected Days')
                               _buildDaysDisplay(
                                   currentScheduleDocument?['days'] as List? ??
                                       []),
-                            SizedBox(height: 18),
-                            _buildInfoRow(
-                                'Number of Pills:',
-                                currentScheduleDocument?['numberOfPills']
-                                        ?.toString() ??
-                                    'N/A'),
                           ],
                         )
                       else
@@ -131,31 +132,6 @@ class _scheduleInfoState extends State<scheduleInfo> {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildInfoRow(String label, String value) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 22,
-            fontFamily: 'Poppins',
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        Text(
-          value,
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 22,
-            fontFamily: 'Poppins',
-          ),
-        ),
-      ],
     );
   }
 

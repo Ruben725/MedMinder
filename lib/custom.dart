@@ -161,7 +161,7 @@ class Custom {
           title,
           style: TextStyle(
             color: Colors.black,
-            fontSize: 18,
+            fontSize: 22,
             fontFamily: 'Poppins',
             fontWeight: FontWeight.w500,
           ),
@@ -171,7 +171,7 @@ class Custom {
           content,
           style: TextStyle(
             color: Colors.black,
-            fontSize: 16,
+            fontSize: 22,
             fontFamily: 'Poppins',
           ),
         ),
@@ -187,7 +187,7 @@ class Custom {
           title,
           style: TextStyle(
             color: Colors.black,
-            fontSize: 18,
+            fontSize: 22,
             fontFamily: 'Poppins',
             fontWeight: FontWeight.w500,
           ),
@@ -201,7 +201,7 @@ class Custom {
                           '• $item',
                           style: TextStyle(
                             color: Colors.black,
-                            fontSize: 16,
+                            fontSize: 22,
                             fontFamily: 'Poppins',
                           ),
                         ))
@@ -228,7 +228,7 @@ class Custom {
           title,
           style: TextStyle(
             color: Colors.black,
-            fontSize: 18,
+            fontSize: 22,
             fontFamily: 'Poppins',
             fontWeight: FontWeight.w500,
           ),
@@ -242,7 +242,7 @@ class Custom {
                           '• ${entry.key.replaceAll('_', ' ')}: ${entry.value}',
                           style: TextStyle(
                             color: Colors.black,
-                            fontSize: 16,
+                            fontSize: 22,
                             fontFamily: 'Poppins',
                           ),
                         ))
@@ -252,7 +252,7 @@ class Custom {
                 'No consumption method details available',
                 style: TextStyle(
                   color: Colors.black,
-                  fontSize: 16,
+                  fontSize: 22,
                   fontFamily: 'Poppins',
                   fontStyle: FontStyle.italic,
                 ),
