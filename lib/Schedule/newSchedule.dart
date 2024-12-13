@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:medminder/Home/medicationsList.dart';
+import 'package:medminder/Medication/medicationList.dart';
 import 'package:medminder/getStarted/userAuth.dart';
 import 'package:medminder/Notification/notification.dart';
 
@@ -35,10 +35,10 @@ class _NewScheduleState extends State<NewSchedule> {
   ];
   List<String> _selectedDays = [];
 
-  //int _numberOfPills = 1;
-  //final TextEditingController _strengthController = TextEditingController();
-  //final List<String> _strengthUnits = ['mg', 'mcg'];
- // String _selectedStrengthUnit = 'mg';
+  int _numberOfPills = 1;
+  final TextEditingController _strengthController = TextEditingController();
+  final List<String> _strengthUnits = ['mg', 'mcg'];
+  String _selectedStrengthUnit = 'mg';
 
   // Changed from List to single TimeOfDay
   TimeOfDay? _medicineTime;
@@ -46,7 +46,7 @@ class _NewScheduleState extends State<NewSchedule> {
   // Firestore instance
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-/*
+
   void _incrementPills() {
     setState(() {
       _numberOfPills++;
@@ -59,7 +59,7 @@ class _NewScheduleState extends State<NewSchedule> {
         _numberOfPills--;
       }
     });
-  }*/
+  }
 
   Future<void> _selectTime(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
@@ -74,12 +74,6 @@ class _NewScheduleState extends State<NewSchedule> {
     }
   }
 
-   DateTime reminderT(TimeOfDay? time) {
-    TimeOfDay rTime = time ?? TimeOfDay(hour: 0, minute: 0);
-    DateTime now = DateTime.now();
-    DateTime reminder = DateTime(now.year, now.month, now.day, rTime.hour, rTime.minute);
-    return reminder;
-  }
 
   Future<void> _saveMedicationToFirestore(BuildContext context) async {
     try {
@@ -97,13 +91,13 @@ class _NewScheduleState extends State<NewSchedule> {
         );
         return;
       }
-/*
+
       if (_strengthController.text.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Please enter medication strength')),
         );
         return;
-      }*/
+      }
 
       // Determine days to take medication based on frequency
       List<String> medicationDays = [];
@@ -137,8 +131,8 @@ class _NewScheduleState extends State<NewSchedule> {
         'medicationName': widget.medicationName,
         'frequency': _selectedFrequency,
         'days': medicationDays,
-        //'numberOfPills': _numberOfPills,
-       // 'strength': '${_strengthController.text} $_selectedStrengthUnit',
+        'numberOfPills': _numberOfPills,
+        'strength': '${_strengthController.text} $_selectedStrengthUnit',
         'time': medicineTimeString,
         'status': false,
         'createdAt': FieldValue.serverTimestamp(),
@@ -299,7 +293,7 @@ class _NewScheduleState extends State<NewSchedule> {
                 _buildDaysSelectionSection(),
               ],
 
-              /*
+              
               Text(
                 'Number of Pills',
                 style: TextStyle(
@@ -311,7 +305,7 @@ class _NewScheduleState extends State<NewSchedule> {
               ),
               
               SizedBox(height: 10),
-              //_buildPillCountSection(),
+              _buildPillCountSection(),
               SizedBox(height: 20),
 
               
@@ -327,7 +321,7 @@ class _NewScheduleState extends State<NewSchedule> {
               
               SizedBox(height: 10),
               _buildStrengthSection(),
-              */
+              
               SizedBox(height: 20),
               Text(
                 'Times',
@@ -340,13 +334,6 @@ class _NewScheduleState extends State<NewSchedule> {
               ),
               SizedBox(height: 10),
               _buildTimesSection(),
-
-              ElevatedButton(
-              onPressed: () {
-                DateTime scheduledTime = reminderT(_medicineTime);
-                notificationRem.scheduledNotification("Notification is Scheduled", "This is a scheduled reminder, 5 seconds", scheduledTime);
-              },
-              child: const Text("Scheduled Notification")),
 
             ],
           ),
@@ -399,7 +386,7 @@ class _NewScheduleState extends State<NewSchedule> {
     );
   }
 
-/*
+
   Widget _buildPillCountSection() {
     return Container(
       width: double.infinity,
@@ -430,9 +417,9 @@ class _NewScheduleState extends State<NewSchedule> {
         ],
       ),
     );
-  }*/
+  }
 
-/*
+
   Widget _buildStrengthSection() {
     return Container(
       width: double.infinity,
@@ -493,7 +480,7 @@ class _NewScheduleState extends State<NewSchedule> {
       ),
     );
   }
-  */
+  
 
   // Helper function to convert TimeOfDay to 12-hour format string
   String convert24HourTo12Hour(TimeOfDay time) {
@@ -545,11 +532,11 @@ class _NewScheduleState extends State<NewSchedule> {
     );
   }
 
-/*
+
   @override
   void dispose() {
     // Clean up the controller when the widget is disposed
     _strengthController.dispose();
     super.dispose();
-  }*/
+  }
 }

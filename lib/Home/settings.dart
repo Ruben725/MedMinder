@@ -55,7 +55,7 @@ class Settings extends StatelessWidget {
                   Custom.newButton('Sign Out', Color.fromRGBO(188, 49, 51, 1), () async{
                     await userAuth.signout();
                     Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context)=> loginInfo()));
+                    MaterialPageRoute(builder: (context)=> LoginInfo()));
                   }),
                   SizedBox(height: 10,),
                   

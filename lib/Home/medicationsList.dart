@@ -40,6 +40,7 @@ class MedicationsList extends StatelessWidget {
     );
   }
 
+//bottom navigation
   Widget _buildNavItem(String label, Widget icon, VoidCallback onPressed) {
     return GestureDetector(
       onTap: onPressed,

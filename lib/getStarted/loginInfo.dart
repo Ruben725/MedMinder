@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:medminder/custom.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:medminder/getStarted/login.dart';
 import 'package:medminder/Home/home.dart';
+import 'package:medminder/getStarted/login.dart';
 import 'package:medminder/getStarted/userAuth.dart';
 
-class loginInfo extends StatefulWidget {
-  const loginInfo({super.key});
+class LoginInfo extends StatefulWidget {
+  const LoginInfo({super.key});
 
   @override
-  State<loginInfo> createState() => _loginInfoState();
+  State<LoginInfo> createState() => LoginInfoState();
 }
 
-class _loginInfoState extends State<loginInfo> {
+class LoginInfoState extends State<LoginInfo> {
   //Controllers for user inputd
   final auth = userAuth();
   final emailController = TextEditingController();
@@ -41,7 +39,7 @@ class _loginInfoState extends State<loginInfo> {
             Container(
               height: 80, 
               width: 250, 
-              child: Text('Medminder',
+              child: const Text('Medminder',
                     textAlign: TextAlign.center,
                     style:TextStyle(color: Color.fromRGBO(0, 172, 226, 100), fontSize: 40, fontFamily: 'Poppins')
                     )
@@ -56,7 +54,7 @@ class _loginInfoState extends State<loginInfo> {
               height: 32,
               width: 260,
               decoration: BoxDecoration(
-                color: Color.fromRGBO(217, 217, 217, 1),
+                color: const Color.fromRGBO(217, 217, 217, 1),
                 border: Border.all(color: Colors.black, width: 1),
                 borderRadius: BorderRadius.circular(15)
               ),
@@ -76,7 +74,7 @@ class _loginInfoState extends State<loginInfo> {
               height: 32,
               width: 260,
               decoration: BoxDecoration(
-                color: Color.fromRGBO(217, 217, 217, 1),
+                color: const Color.fromRGBO(217, 217, 217, 1),
                 border: Border.all(color: Colors.black, width: 1),
                 borderRadius: BorderRadius.circular(15)
               ),
@@ -93,22 +91,22 @@ class _loginInfoState extends State<loginInfo> {
 
             //Login Button
             Custom.newButton('Login', 
-                  Color.fromRGBO(0, 172, 226, 100),
-                   _login, /*() {Navigator.push(context,
+                  const Color.fromRGBO(0, 172, 226, 100),
+                   loginUser, /*() {Navigator.push(context,
                           MaterialPageRoute(
                             builder: (context) => loginInfo(), //Will take user to Homepage
                           ),
                     );
                    },*/
                   ),
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
 
             //Back Button
             Custom.newButton('Back', 
-                  Color.fromRGBO(217, 217, 217, 1),
+                  const Color.fromRGBO(217, 217, 217, 1),
                   () {Navigator.push(context,
                           MaterialPageRoute(
-                            builder: (context) => Login(),  //to Login page 
+                            builder: (context) => const Login(),  //to Login page 
                           ),
                     );
                    },
@@ -119,11 +117,11 @@ class _loginInfoState extends State<loginInfo> {
     );
   }
 
-  _login() async{
+  loginUser() async{
       
       final user = await auth.userLogin(emailController.text, pwController.text);
       if (user != null){
-        print("Logged In");
+       print("Logged In");
        Navigator.push(
         context, 
         MaterialPageRoute(builder: (context) => AppHome()));

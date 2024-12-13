@@ -1,24 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
-import 'package:medminder/Home/home.dart';
 import 'package:medminder/custom.dart';
-import 'package:medminder/getStarted/accountInfo.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:medminder/Home/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:medminder/getStarted/accountInfo.dart';
 
-class personalInfo extends StatefulWidget {
+class PersonalInfo extends StatefulWidget {
   final String email;
   final String password;
 
-  const personalInfo({Key? key, required this.email, required this.password});
+  const PersonalInfo({Key? key, required this.email, required this.password});
 
   @override
-  State<personalInfo> createState() => _personalInfoState();
+  State<PersonalInfo> createState() => PersonalInfoState();
 }
 
 //User personal Info page
-class _personalInfoState extends State<personalInfo> {
+class PersonalInfoState extends State<PersonalInfo> {
   //Controllers for user input
   final formkey = GlobalKey<FormState>();
   final fnameController = TextEditingController();
@@ -84,13 +83,13 @@ class _personalInfoState extends State<personalInfo> {
               Container(
                 height: 80, 
                 width: 300, 
-                child: Text('Sign Up: \n Personal Info',
+                child: const Text('Sign Up: \n Personal Info',
                         textAlign: TextAlign.center,
                         style:TextStyle(color: Colors.black, fontSize: 28, fontFamily: 'Poppins')
                         )
               ),
               //Used SizedBox to space out containers
-              SizedBox(height: 20.0),
+              const SizedBox(height: 20.0),
 
               //First name Input field
               //layout is same for the rest of the input fields
@@ -146,7 +145,7 @@ class _personalInfoState extends State<personalInfo> {
                 },
                 ),
               ),
-              SizedBox(height: 20.0,),
+              const SizedBox(height: 20.0,),
 
               Container(
                 width: 260,
@@ -172,7 +171,7 @@ class _personalInfoState extends State<personalInfo> {
                   }
                 ),
               ),
-              SizedBox(height: 20.0,),
+              const SizedBox(height: 20.0,),
 
               //Custon button used
               //Finish Button
@@ -187,16 +186,15 @@ class _personalInfoState extends State<personalInfo> {
                           )
                             ),
                       ),
-              ),
-                  
-              SizedBox(height: 20.0),
+              ),    
+              const SizedBox(height: 20.0),
   
               //Back Button
               Custom.newButton('Back', 
-                    Color.fromRGBO(217, 217, 217, 1),
+                    const Color.fromRGBO(217, 217, 217, 1),
                     () {Navigator.push(context,
                             MaterialPageRoute(
-                              builder: (context) => accountInfo(), //Goes to accountInfo page
+                              builder: (context) => const AccountInfo(), //Goes to accountInfo page
                             ),
                       );
                     },

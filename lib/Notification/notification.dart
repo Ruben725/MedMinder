@@ -1,43 +1,31 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 
-class notificationRem{
+class NotificationRem{
 
-  static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-  static Future<void> onDidReceiveNotification(NotificationResponse) async {}
+  static final FlutterLocalNotificationsPlugin localNotification = FlutterLocalNotificationsPlugin();
+  static Future<void> notifReceived(nResponse) async {}
 
   static Future<void> init() async{
 
-    const AndroidInitializationSettings androidInitializationSettings = AndroidInitializationSettings("@mipmap/ic_launcher");
-
-    const InitializationSettings initializationSettings = InitializationSettings(
-      android: androidInitializationSettings,
+    const AndroidInitializationSettings androidInitialization = AndroidInitializationSettings("@mipmap/ic_launcher");
+    const InitializationSettings initialSettings = InitializationSettings(
+      android: androidInitialization,
     );
 
-    await flutterLocalNotificationsPlugin.initialize(
-      initializationSettings,
-      onDidReceiveNotificationResponse: onDidReceiveNotification,
-      onDidReceiveBackgroundNotificationResponse: onDidReceiveNotification,
+    await localNotification.initialize(
+      initialSettings,
+      onDidReceiveNotificationResponse: notifReceived,
+      onDidReceiveBackgroundNotificationResponse: notifReceived,
     );
 
-    await flutterLocalNotificationsPlugin
+    await localNotification
       .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
       ?.requestNotificationsPermission();
 
+
   }
 
-  //Instant
-  static Future<void> showInstantNotification(String title, String body) async{
-    const NotificationDetails platformChannelSpecifies = NotificationDetails(
-      android: AndroidNotificationDetails(
-        "channelId", 
-        "channelName",
-        importance: Importance.high,
-        priority: Priority.high
-        ),
-    );
-    await flutterLocalNotificationsPlugin.show(0, title, body, platformChannelSpecifies);
-  }
 
   //Scheduled
   static Future<void> scheduledNotification(String title, String body, DateTime scheduledTime) async{
@@ -50,7 +38,7 @@ class notificationRem{
         ),
     );
 
-    await flutterLocalNotificationsPlugin.zonedSchedule(
+    await localNotification.zonedSchedule(
       0, 
       title, 
       body, 
@@ -62,6 +50,7 @@ class notificationRem{
     );
   }
 
+/*
   static Future<void> _showFullScreen() async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics = 
       AndroidNotificationDetails(
@@ -72,5 +61,5 @@ class notificationRem{
         priority: Priority.high,
         fullScreenIntent: true,);
   }
-
+*/
 }

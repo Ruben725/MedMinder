@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:medminder/Notification/notification.dart';
 import 'package:medminder/custom.dart';
-import 'package:medminder/Notification/newSchedule.dart';
+import 'package:medminder/Schedule/newSchedule.dart';
 class notiTest extends StatefulWidget {
   const notiTest({super.key});
 
@@ -18,18 +18,13 @@ class _notiTestState extends State<notiTest> {
           mainAxisAlignment: MainAxisAlignment.center,
 
           children: [
-            ElevatedButton(
-              onPressed: () {
-                notificationRem.showInstantNotification("Instant Notification", "Notification appeared as soon button was pressed");
-              },
-              child: const Text("Show Notification"),
-              ),
+           
               SizedBox(height: 20,),
 
               ElevatedButton(
               onPressed: () {
                 DateTime scheduledTime = DateTime.now().add(const Duration(seconds: 5));
-                notificationRem.scheduledNotification("Notification is Scheduled", "This is a scheduled reminder, 5 seconds", scheduledTime);
+                NotificationRem.scheduledNotification("Notification is Scheduled", "This is a scheduled reminder, 5 seconds", scheduledTime);
               },
               child: const Text("Scheduled Notification")),
 
