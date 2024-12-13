@@ -8,14 +8,6 @@ import 'package:medminder/getStarted/userAuth.dart';
 //where you want to navigate to.
 
 class Custom {
-  DateTime reminderT(TimeOfDay? time) {
-    TimeOfDay rTime = time ?? TimeOfDay(hour: 0, minute: 0);
-    DateTime now = DateTime.now();
-    DateTime reminder =
-        DateTime(now.year, now.month, now.day, rTime.hour, rTime.minute);
-    return reminder;
-  }
-
   static Widget newButton(String text, Color color, VoidCallback onPressed) {
     return SizedBox(
       width: 200,

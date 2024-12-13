@@ -5,6 +5,7 @@ import 'package:medminder/custom.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:medminder/getStarted/userAuth.dart';
+import 'package:medminder/Notification/notification.dart';
 
 class AppHome extends StatefulWidget {
   @override
@@ -278,7 +279,9 @@ class AppHomeState extends State<AppHome> {
     } catch (e) {
       print('Error parsing time: $e');
     }
-
+    DateTime scheduleTime = scheduledTime ?? DateTime(2024, 1, 1);
+    NotificationRem.scheduledNotification(
+        "Medication Time!", "Time to take your " + name, scheduleTime);
     // Determine border color
     Color borderColor;
     IconData statusIcon;

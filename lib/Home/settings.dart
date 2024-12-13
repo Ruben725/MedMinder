@@ -50,7 +50,37 @@ class UserSettings extends StatelessWidget {
                   ),
                 ),
                 Spacer(),
+                // Settings options
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildSettingOption('Account'),
+                      const SizedBox(height: 10),
+                      Container(
+                        width: double.infinity,
+                        height: 2,
+                        color: const Color(0xFF00ABE1),
+                      ),
+                      const SizedBox(height: 20),
+                      _buildSettingOption('Privacy'),
+                      const SizedBox(height: 20),
+                      _buildSettingOption('Settings'),
+                    ],
+                  ),
+                ),
+                Spacer(),
 
+                Custom.newButton('Sign Out', Color.fromRGBO(188, 49, 51, 1),
+                    () async {
+                  await userAuth.signout();
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => LoginInfo()));
+                }),
+                SizedBox(
+                  height: 10,
+                ),
                 Custom.newButton('Sign Out', Color.fromRGBO(188, 49, 51, 1),
                     () async {
                   await userAuth.signout();
