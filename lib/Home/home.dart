@@ -8,42 +8,42 @@ import 'package:medminder/getStarted/userAuth.dart';
 
 class AppHome extends StatefulWidget {
   @override
-  _AppHomeState createState() => _AppHomeState();
+  AppHomeState createState() => AppHomeState();
 }
 
-class _AppHomeState extends State<AppHome> {
-  final TextEditingController _searchController = TextEditingController();
-  String _searchQuery = '';
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+class AppHomeState extends State<AppHome> {
+  final TextEditingController searchController = TextEditingController();
+  String searchQuery = '';
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
   // Update the type annotation for medications
   Map<String, Map<String, dynamic>> medications = {};
 
   @override
   void initState() {
     super.initState();
-    _fetchCurrentDayMedications();
+    getCurrentDayMedications();
   }
 
   @override
   void dispose() {
-    _searchController.dispose();
+    searchController.dispose();
     super.dispose();
   }
 
-  void _clearSearch() {
+  void clearSearch() {
     setState(() {
-      _searchController.clear();
-      _searchQuery = '';
+      searchController.clear();
+      searchQuery = '';
     });
   }
 
-  Future<void> _fetchCurrentDayMedications() async {
+  Future<void> getCurrentDayMedications() async {
     try {
       String? userId = userAuth.getId();
       DateTime now = DateTime.now();
       String currentDay = DateFormat('EEEE').format(now);
 
-      QuerySnapshot querySnapshot = await _firestore
+      QuerySnapshot querySnapshot = await firestore
           .collection('MedicationSchedule')
           .where('userId', isEqualTo: userId)
           .where('days', arrayContains: currentDay)
@@ -76,7 +76,7 @@ class _AppHomeState extends State<AppHome> {
     List<Map<String, dynamic>> filtered = medications.values
         .where((medication) => medication['medicationName']
             .toLowerCase()
-            .contains(_searchQuery.toLowerCase()))
+            .contains(searchQuery.toLowerCase()))
         .toList();
 
     // Sort the filtered medications by time
@@ -185,10 +185,10 @@ class _AppHomeState extends State<AppHome> {
                         ),
                       ),
                       child: TextField(
-                        controller: _searchController,
+                        controller: searchController,
                         onChanged: (value) {
                           setState(() {
-                            _searchQuery = value;
+                            searchQuery = value;
                           });
                         },
                         decoration: InputDecoration(
@@ -201,11 +201,11 @@ class _AppHomeState extends State<AppHome> {
                           ),
                           prefixIcon:
                               Icon(Icons.search, color: Color(0xFF00ABE1)),
-                          suffixIcon: _searchQuery.isNotEmpty
+                          suffixIcon: searchQuery.isNotEmpty
                               ? IconButton(
                                   icon: Icon(Icons.clear,
                                       color: Color(0xFF00ABE1)),
-                                  onPressed: _clearSearch,
+                                  onPressed: clearSearch,
                                 )
                               : null,
                           border: InputBorder.none,
@@ -241,7 +241,7 @@ class _AppHomeState extends State<AppHome> {
                             : filteredMedications
                                 .map((med) => Column(
                                       children: [
-                                        _buildMedicationCard(med),
+                                        buildMedicationCard(med),
                                         SizedBox(height: 16),
                                       ],
                                     ))
@@ -261,7 +261,7 @@ class _AppHomeState extends State<AppHome> {
     );
   }
 
-  Widget _buildMedicationCard(Map<String, dynamic> med) {
+  Widget buildMedicationCard(Map<String, dynamic> med) {
     String name = med['medicationName'] ?? 'Unknown Medication';
     String displayTime = med['time']?.toString() ?? 'No time set';
     bool status = med['status'] ?? false;

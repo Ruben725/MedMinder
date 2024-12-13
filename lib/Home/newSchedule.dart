@@ -28,15 +28,15 @@ class newScheduleState extends State<NewSchedule> {
   TimeOfDay? medicineTime;
 
   // Firestore instance
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  void _incrementPills() {
+  void incrementPills() {
     setState(() {
       numberOfPills++;
     });
   }
 
-  void _decrementPills() {
+  void decrementPills() {
     setState(() {
       if (numberOfPills > 1) {
         numberOfPills--;
@@ -57,7 +57,7 @@ class newScheduleState extends State<NewSchedule> {
     }
   }
 
-  Future<void> saveMedicationToFirestore(BuildContext context) async {
+  Future<void> createMedicationSchedule(BuildContext context) async {
     try {
       // Validate required fields
       if (widget.medicationName == null) {
@@ -122,7 +122,7 @@ class newScheduleState extends State<NewSchedule> {
       };
 
       // Save to Firestore
-      await _firestore.collection('MedicationSchedule').add(medicationData);
+      await firestore.collection('MedicationSchedule').add(medicationData);
 
       showPopup(
         context: context,
@@ -228,8 +228,8 @@ class newScheduleState extends State<NewSchedule> {
               SizedBox(height: 10),
               ScheduleUtils.buildPillCountSection(
                 numberOfPills: numberOfPills,
-                onIncrement: _incrementPills,
-                onDecrement: _decrementPills,
+                onIncrement: incrementPills,
+                onDecrement: decrementPills,
               ),
               SizedBox(height: 20),
               Text(
@@ -273,11 +273,11 @@ class newScheduleState extends State<NewSchedule> {
           ),
         ),
       ),
-      bottomNavigationBar: _buildActionButtons(context),
+      bottomNavigationBar: buildActionButtons(context),
     );
   }
 
-  Widget _buildActionButtons(BuildContext context) {
+  Widget buildActionButtons(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Row(
@@ -302,7 +302,7 @@ class newScheduleState extends State<NewSchedule> {
           SizedBox(width: 16),
           Expanded(
             child: ElevatedButton(
-              onPressed: () => saveMedicationToFirestore(context),
+              onPressed: () => createMedicationSchedule(context),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color(0xFF00A624).withOpacity(0.5),
                 foregroundColor: Colors.black,

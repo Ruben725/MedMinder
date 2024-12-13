@@ -10,26 +10,26 @@ class scheduleInfo extends StatefulWidget {
   scheduleInfo({Key? key, required this.medicationName}) : super(key: key);
 
   @override
-  _scheduleInfoState createState() => _scheduleInfoState();
+  scheduleInfoState createState() => scheduleInfoState();
 }
 
-class _scheduleInfoState extends State<scheduleInfo> {
+class scheduleInfoState extends State<scheduleInfo> {
   DocumentSnapshot? currentScheduleDocument;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   @override
   void initState() {
     super.initState();
-    _fetchCurrentSchedule();
+    getCurrentSchedule();
   }
 
-  void _fetchCurrentSchedule() async {
+  void getCurrentSchedule() async {
     try {
       // Get the current user's ID
       String? userId = userAuth.getId();
 
       // Query to find the specific medication schedule document
-      QuerySnapshot querySnapshot = await _firestore
+      QuerySnapshot querySnapshot = await firestore
           .collection('MedicationSchedule')
           .where('userId', isEqualTo: userId)
           .where('medicationName', isEqualTo: widget.medicationName)
@@ -109,7 +109,7 @@ class _scheduleInfoState extends State<scheduleInfo> {
                             SizedBox(height: 18),
                             if (currentScheduleDocument?['frequency'] ==
                                 'Selected Days')
-                              _buildDaysDisplay(
+                              buildDaysDisplay(
                                   currentScheduleDocument?['days'] as List? ??
                                       []),
                           ],
@@ -127,7 +127,7 @@ class _scheduleInfoState extends State<scheduleInfo> {
             // Bottom Buttons Section
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: _buildActionButtons(context),
+              child: buildActionButtons(context),
             ),
           ],
         ),
@@ -135,7 +135,7 @@ class _scheduleInfoState extends State<scheduleInfo> {
     );
   }
 
-  Widget _buildDaysDisplay(List<dynamic> selectedDaysInput) {
+  Widget buildDaysDisplay(List<dynamic> selectedDaysInput) {
     // Convert dynamic list to List<String>
     final List<String> selectedDays = selectedDaysInput.cast<String>();
 
@@ -193,7 +193,7 @@ class _scheduleInfoState extends State<scheduleInfo> {
     );
   }
 
-  Widget _buildActionButtons(BuildContext context) {
+  Widget buildActionButtons(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -217,7 +217,7 @@ class _scheduleInfoState extends State<scheduleInfo> {
         SizedBox(width: 16),
         Expanded(
           child: ElevatedButton(
-            onPressed: () => _handleMedicationTaken(context),
+            onPressed: () => handleMedicationTaken(context),
             style: ElevatedButton.styleFrom(
               backgroundColor: Color(0xFF00A624).withOpacity(0.5),
               foregroundColor: Colors.black,
@@ -230,7 +230,7 @@ class _scheduleInfoState extends State<scheduleInfo> {
     );
   }
 
-  void _handleMedicationTaken(BuildContext context) async {
+  void handleMedicationTaken(BuildContext context) async {
     try {
       // Check if we have a current schedule document
       if (currentScheduleDocument != null) {
