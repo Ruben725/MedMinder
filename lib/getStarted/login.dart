@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:medminder/custom.dart';
 import 'package:medminder/getStarted/loginInfo.dart';
-import 'package:medminder/getStarted/accountInfo.dart';
+import 'package:medminder/getStarted/getStarted.dart';
 
 
 class Login extends StatelessWidget {
@@ -18,41 +18,40 @@ class Login extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            //Title Container
-            Container(
+           //Title Container
+           Container(
               height: 80, 
               width: 250, 
-              child: Text('Medminder',
+              child: const Text('Medminder',
                     textAlign: TextAlign.center,
                     style:TextStyle(color: Color.fromRGBO(0, 172, 226, 100), fontSize: 40, fontFamily: 'Poppins')
                     )
             ),
 
-          //Logo
-           Image.asset('assets/images/MedMinderLogo.png'),
 
-          //Used to space containers
-           SizedBox(height: 40.0),
+          //Logo
+           const SizedBox(height: 40.0),
+           Image.asset('assets/images/MedMinderLogo.png'),
+           const SizedBox(height: 40.0),
 
           //Login Button
-           NewButton(text: 'Login', 
-                  color:Color.fromRGBO(0, 172, 226, 1),
-                  onPressed: () {Navigator.push(context,
+           Custom.newButton('Login', 
+                 const Color.fromRGBO(0, 172, 226, 1),
+                  () {Navigator.push(context,
                           MaterialPageRoute(
-                            builder: (context) => loginInfo(), //Will go to login Info page
+                            builder: (context) => LoginInfo(), //Will go to login Info page
                           ),
                     );
                    },
                   ),
             
-            SizedBox(height: 20.0),
-
+            const SizedBox(height: 20.0),
             //Create Account Button
-            NewButton(text: 'Create Account', 
-                  color:Color.fromRGBO(217, 217, 217, 1),
-                  onPressed: () {Navigator.push(context,
+            Custom.newButton('Create Account', 
+                  const Color.fromRGBO(217, 217, 217, 1),
+                   () {Navigator.push(context,
                           MaterialPageRoute(
-                            builder: (context) => accountInfo(), //will to user to account setup
+                            builder: (context) => const GetStarted(), //will to user to account setup
                           ),
                     );
                    },
