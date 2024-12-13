@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:medminder/Medication/medicationList.dart';
+import 'package:medminder/Medication/medicationsList.dart';
 import 'package:medminder/Home/profile.dart';
 import 'package:medminder/Home/home.dart';
 import 'package:medminder/getStarted/userAuth.dart';

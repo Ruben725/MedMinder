@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:medminder/custom.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:medminder/Medication/medicationList.dart'; // For navigation
+import 'package:medminder/Medication/medicationsList.dart'; // For navigation
 import 'package:medminder/getStarted/userAuth.dart'; // for userid pull for remove and edit buttons
 import 'package:medminder/Schedule/editSchedule.dart'; // For navigation
 
