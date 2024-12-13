@@ -12,10 +12,10 @@ class EditSchedule extends StatefulWidget {
       : super(key: key);
 
   @override
-  _EditScheduleState createState() => _EditScheduleState();
+  EditScheduleState createState() => EditScheduleState();
 }
 
-class _EditScheduleState extends State<EditSchedule> {
+class EditScheduleState extends State<EditSchedule> {
   // Variables to hold current schedule data
   String currentFrequency = 'Daily';
 
@@ -28,21 +28,21 @@ class _EditScheduleState extends State<EditSchedule> {
   TimeOfDay? medicineTime;
   DocumentSnapshot? currentScheduleDocument;
 
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   @override
   void initState() {
     super.initState();
-    _fetchCurrentSchedule();
+    getCurrentSchedule();
   }
 
-  void _fetchCurrentSchedule() async {
+  void getCurrentSchedule() async {
     try {
       // Get the current user's ID
       String? userId = userAuth.getId();
 
       // Query to find the specific medication schedule document
-      QuerySnapshot querySnapshot = await _firestore
+      QuerySnapshot querySnapshot = await firestore
           .collection('MedicationSchedule')
           .where('userId', isEqualTo: userId)
           .where('medicationName', isEqualTo: widget.medicationName)
@@ -64,7 +64,7 @@ class _EditScheduleState extends State<EditSchedule> {
           strengthController.text = strengthParts[0];
           selectedStrengthUnit = strengthParts[1];
 
-          TimeOfDay parsedTime = _parseTimeString(scheduleDoc['time']);
+          TimeOfDay parsedTime = parseTimeString(scheduleDoc['time']);
           medicineTime = parsedTime;
 
           selectedDays = List<String>.from(scheduleDoc['days'] ?? []);
@@ -85,7 +85,7 @@ class _EditScheduleState extends State<EditSchedule> {
     }
   }
 
-  TimeOfDay _parseTimeString(String timeString) {
+  TimeOfDay parseTimeString(String timeString) {
     // Expects time in format like "10:30 AM"
     List<String> timeParts = timeString.split(' ');
     List<String> hourMinute = timeParts[0].split(':');
@@ -105,7 +105,7 @@ class _EditScheduleState extends State<EditSchedule> {
     return TimeOfDay(hour: hour, minute: minute);
   }
 
-  Future<void> _updateMedicationSchedule() async {
+  Future<void> updateMedicationSchedule() async {
     try {
       // Validate required fields
       if (medicineTime == null) {
@@ -183,13 +183,13 @@ class _EditScheduleState extends State<EditSchedule> {
     }
   }
 
-  void _incrementPills() {
+  void incrementPills() {
     setState(() {
       numberOfPills++;
     });
   }
 
-  void _decrementPills() {
+  void decrementPills() {
     setState(() {
       if (numberOfPills > 1) {
         numberOfPills--;
@@ -300,8 +300,8 @@ class _EditScheduleState extends State<EditSchedule> {
                     SizedBox(height: 10),
                     ScheduleUtils.buildPillCountSection(
                       numberOfPills: numberOfPills,
-                      onIncrement: _incrementPills,
-                      onDecrement: _decrementPills,
+                      onIncrement: incrementPills,
+                      onDecrement: decrementPills,
                     ),
                     SizedBox(height: 20),
                     Text(
@@ -346,11 +346,11 @@ class _EditScheduleState extends State<EditSchedule> {
               ),
             )
           : Center(child: CircularProgressIndicator()),
-      bottomNavigationBar: _buildActionButtons(context),
+      bottomNavigationBar: buildActionButtons(context),
     );
   }
 
-  Widget _buildActionButtons(BuildContext context) {
+  Widget buildActionButtons(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Row(
@@ -375,7 +375,7 @@ class _EditScheduleState extends State<EditSchedule> {
           SizedBox(width: 16),
           Expanded(
             child: ElevatedButton(
-              onPressed: _updateMedicationSchedule,
+              onPressed: updateMedicationSchedule,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color(0xFF00A624).withOpacity(0.5),
                 foregroundColor: Colors.black,
