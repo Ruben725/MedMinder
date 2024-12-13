@@ -4,62 +4,47 @@ import 'package:medminder/Schedule/scheduleInfo.dart';
 import 'package:medminder/custom.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:medminder/getStarted/loginInfo.dart';
 import 'package:medminder/getStarted/userAuth.dart';
 import 'package:medminder/Notification/notification.dart';
-import 'package:medminder/custom.dart';
-import 'package:medminder/Medication/medicationInfo.dart';
-import 'package:medminder/Medication/editMedication.dart';
 
 class AppHome extends StatefulWidget {
   @override
-  _AppHomeState createState() => _AppHomeState();
+  AppHomeState createState() => AppHomeState();
 }
 
-class _AppHomeState extends State<AppHome> {
-  final TextEditingController _searchController = TextEditingController();
-  String _searchQuery = '';
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+class AppHomeState extends State<AppHome> {
+  final TextEditingController searchController = TextEditingController();
+  String searchQuery = '';
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
   // Update the type annotation for medications
   Map<String, Map<String, dynamic>> medications = {};
-
-  final ScrollController _autocompleteScrollController = ScrollController();
-
- // List<String> _allMedications = []; // used to contain all user medication for display; previously for testing
-  List<String> _searchResults = [];
-  bool _showAutocomplete = false;
-  List<String> _drugDataDocumentIds = [];
-  List<String> _allBrands = [];
 
   @override
   void initState() {
     super.initState();
-    _fetchCurrentDayMedications();
-    _fetchBrandNames();
-    _fetchDrugDataDocumentIds();
+    getCurrentDayMedications();
   }
-  
 
   @override
   void dispose() {
-    _searchController.dispose();
+    searchController.dispose();
     super.dispose();
   }
 
-  void _clearSearch() {
+  void clearSearch() {
     setState(() {
-      _searchController.clear();
-      _searchQuery = '';
+      searchController.clear();
+      searchQuery = '';
     });
   }
 
-  Future<void> _fetchCurrentDayMedications() async {
+  Future<void> getCurrentDayMedications() async {
     try {
       String? userId = userAuth.getId();
       DateTime now = DateTime.now();
       String currentDay = DateFormat('EEEE').format(now);
 
-      QuerySnapshot querySnapshot = await _firestore
+      QuerySnapshot querySnapshot = await firestore
           .collection('MedicationSchedule')
           .where('userId', isEqualTo: userId)
           .where('days', arrayContains: currentDay)
@@ -92,7 +77,7 @@ class _AppHomeState extends State<AppHome> {
     List<Map<String, dynamic>> filtered = medications.values
         .where((medication) => medication['medicationName']
             .toLowerCase()
-            .contains(_searchQuery.toLowerCase()))
+            .contains(searchQuery.toLowerCase()))
         .toList();
 
     // Sort the filtered medications by time
@@ -172,9 +157,8 @@ class _AppHomeState extends State<AppHome> {
                           onTap: () {
                             Navigator.push(
                               context,
-                             MaterialPageRoute(
-                            builder: (context) => LoginInfo(), //Goes to login page
-                          ),
+                              MaterialPageRoute(
+                                  builder: (context) => UserSettings()),
                             );
                           },
                           child: Padding(
@@ -202,12 +186,12 @@ class _AppHomeState extends State<AppHome> {
                         ),
                       ),
                       child: TextField(
-                        controller: _searchController,
-                       /* onChanged: (value) {
+                        controller: searchController,
+                        onChanged: (value) {
                           setState(() {
-                            _searchQuery = value;
+                            searchQuery = value;
                           });
-                        },*/
+                        },
                         decoration: InputDecoration(
                           hintText: 'Search',
                           hintStyle: TextStyle(
@@ -218,11 +202,11 @@ class _AppHomeState extends State<AppHome> {
                           ),
                           prefixIcon:
                               Icon(Icons.search, color: Color(0xFF00ABE1)),
-                          suffixIcon: _searchQuery.isNotEmpty
+                          suffixIcon: searchQuery.isNotEmpty
                               ? IconButton(
                                   icon: Icon(Icons.clear,
                                       color: Color(0xFF00ABE1)),
-                                  onPressed: _clearSearch,
+                                  onPressed: clearSearch,
                                 )
                               : null,
                           border: InputBorder.none,
@@ -231,9 +215,6 @@ class _AppHomeState extends State<AppHome> {
                             vertical: 8,
                           ),
                         ),
-                        onChanged: _handleSearch,
-                        onSubmitted: _handleSearchSubmit,
-                        textInputAction: TextInputAction.search,
                       ),
                     ),
                   ),
@@ -261,7 +242,7 @@ class _AppHomeState extends State<AppHome> {
                             : filteredMedications
                                 .map((med) => Column(
                                       children: [
-                                        _buildMedicationCard(med),
+                                        buildMedicationCard(med),
                                         SizedBox(height: 16),
                                       ],
                                     ))
@@ -281,15 +262,11 @@ class _AppHomeState extends State<AppHome> {
     );
   }
 
-  
-
-  Widget _buildMedicationCard(Map<String, dynamic> med) {
-
+  Widget buildMedicationCard(Map<String, dynamic> med) {
     String name = med['medicationName'] ?? 'Unknown Medication';
     String displayTime = med['time']?.toString() ?? 'No time set';
     bool status = med['status'] ?? false;
     int numberOfPills = med['numberOfPills'] ?? 1;
-
 
     // Parse the scheduled time
     DateTime? scheduledTime;
@@ -302,11 +279,8 @@ class _AppHomeState extends State<AppHome> {
     } catch (e) {
       print('Error parsing time: $e');
     }
-
-    //notification
-    DateTime scheduledTime2 = scheduledTime!;
-    NotificationRem.scheduledNotification("It's time for your medication!", "Please take your " + name, scheduledTime2);
-
+    DateTime scheduleTime = scheduledTime ?? DateTime(2024, 1, 1);
+    NotificationRem.scheduledNotification("Medication Time!", "Time to take your " + name, scheduleTime);
     // Determine border color
     Color borderColor;
     IconData statusIcon;
@@ -318,7 +292,7 @@ class _AppHomeState extends State<AppHome> {
       if (scheduledTime != null) {
         if (scheduledTime.isBefore(DateTime.now())) {
           // Scheduled time has passed and status is false, show red
-          borderColor = Color.fromARGB(255, 200, 29, 17);
+          borderColor = Color(0xFFF44336);
           statusIcon = Icons.error;
         } else {
           // Scheduled time is in the future and status is false, show gray
@@ -403,234 +377,4 @@ class _AppHomeState extends State<AppHome> {
       ),
     );
   }
-
-  Future<void> _fetchDrugDataDocumentIds() async {
-    try {
-      CollectionReference drugDataCollection =
-          FirebaseFirestore.instance.collection('DrugData');
-
-      QuerySnapshot querySnapshot = await drugDataCollection.get();
-
-      setState(() {
-        _drugDataDocumentIds = querySnapshot.docs.map((doc) => doc.id).toList();
-      });
-    } catch (error) {
-      print('Error fetching DrugData document IDs: $error');
-    }
-  }
-
-  Future<void> _fetchBrandNames() async {
-    try {
-      CollectionReference drugDataCollection =
-          FirebaseFirestore.instance.collection('DrugData');
-
-      QuerySnapshot querySnapshot = await drugDataCollection.get();
-
-      List<String> allBrands = [];
-      for (var doc in querySnapshot.docs) {
-        Map<String, dynamic>? data = doc.data() as Map<String, dynamic>?;
-        if (data != null) {
-          dynamic brandNames = data['brand_name'];
-          if (brandNames is String && brandNames.isNotEmpty) {
-            allBrands.add(brandNames);
-          } else if (brandNames is List<dynamic> && brandNames.isNotEmpty) {
-            allBrands.addAll(brandNames.map((brand) => brand.toString()));
-          }
-        }
-      }
-
-      setState(() {
-        _allBrands =
-            allBrands.toSet().toList(); // Convert to Set to remove duplicates
-      });
-    } catch (error) {
-      print('Error fetching brand names: $error');
-    }
-  }
-
-  void _handleSearch(String value) {
-    // allows search by drug name and by brand name
-    List<String> allPossibleMedications = [
-      ..._drugDataDocumentIds,
-      ..._allBrands,
-    ];
-
-    setState(() {
-      if (value.isEmpty) {
-        _searchResults = [];
-        _showAutocomplete = false;
-      } else {
-        _searchResults = allPossibleMedications
-            .where((medication) =>
-                medication.toLowerCase().contains(value.toLowerCase()))
-            .toList();
-        _showAutocomplete = true;
-      }
-    });
-  }
-
-  Future<void> _handleSearchSubmit(String query) async {
-    try {
-      CollectionReference drugDataCollection =
-          FirebaseFirestore.instance.collection('DrugData');
-
-      // Reformat the input to only the first character being capitalized to match the document id
-      String capitalizedQuery = query.substring(0, 1).toUpperCase() +
-          query.substring(1).toLowerCase();
-
-      // First, check if the query matches a document ID
-      QuerySnapshot querySnapshot = await drugDataCollection
-          .where(FieldPath.documentId, isEqualTo: capitalizedQuery)
-          .get();
-
-      if (querySnapshot.docs.isNotEmpty) {
-        for (var doc in querySnapshot.docs) {
-          Map<String, dynamic>? data = doc.data() as Map<String, dynamic>?;
-          if (data != null) {
-            // Navigate to MedicationInfo with the drug data
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => MedicationInfo(
-                  medicationName: data['drug_name'] ?? capitalizedQuery,
-                  dosage: data['dosage'] ?? 'Not specified',
-                  brandName: data['brand_name'] ?? 'N/A',
-                  foodInteractions:
-                      data['food_interaction'] ?? 'No known interactions',
-                  foodsToAvoid: data['foods_to_avoid'] ?? [],
-                  consumptionMethod:
-                      data['recommended_consumption_method'] ?? {},
-                  sideEffects: data['side_effects'] ?? [],
-                  summary: data['summary'] ?? 'No summary available',
-                  synonyms: data['synonym'] ?? [],
-                ),
-              ),
-            );
-            return; // Exit after finding the first matching document
-          }
-        }
-      } else {
-        // If no document found, check if the query matches a brand name
-        bool foundBrandMatch = false;
-        for (String brand in _allBrands) {
-          if (brand.toLowerCase() == query.toLowerCase()) {
-            // Navigate to MedicationInfo with the brand name
-            QuerySnapshot brandSnapshot = await drugDataCollection
-                .where('brand_name', arrayContains: brand)
-                .get();
-
-            if (brandSnapshot.docs.isNotEmpty) {
-              for (var doc in brandSnapshot.docs) {
-                Map<String, dynamic>? data =
-                    doc.data() as Map<String, dynamic>?;
-                if (data != null) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => MedicationInfo(
-                        medicationName: data['drug_name'] ?? brand,
-                        dosage: data['dosage'] ?? 'Not specified',
-                        brandName: data['brand_name'] ?? 'N/A',
-                        foodInteractions:
-                            data['food_interaction'] ?? 'No known interactions',
-                        foodsToAvoid: data['foods_to_avoid'] ?? [],
-                        consumptionMethod:
-                            data['recommended_consumption_method'] ?? {},
-                        sideEffects: data['side_effects'] ?? [],
-                        summary: data['summary'] ?? 'No summary available',
-                        synonyms: data['synonym'] ?? [],
-                      ),
-                    ),
-                  );
-                  foundBrandMatch = true;
-                  break;
-                }
-              }
-            }
-          }
-        }
-
-        if (!foundBrandMatch) {
-          // If no document found and no brand match, show a snackbar
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('No medication found for "$query"'),
-              duration: Duration(seconds: 2),
-            ),
-          );
-        }
-      }
-
-      _searchController.clear();
-    } catch (error) {
-      print('Error retrieving data from Firestore: $error');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error searching for medication'),
-          duration: Duration(seconds: 2),
-        ),
-      );
-    }
-  }
-
-  Widget _buildSearchAutocomplete() {
-    return _showAutocomplete && _searchResults.isNotEmpty
-        ? Container(
-            margin: const EdgeInsets.symmetric(horizontal: 16),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            constraints: BoxConstraints(
-              maxHeight: 200,
-            ),
-            child: RawScrollbar(
-              thumbColor: Colors.grey.withOpacity(0.5),
-              radius: const Radius.circular(20),
-              thickness: 4,
-              controller: _autocompleteScrollController,
-              child: ListView.separated(
-                controller: _autocompleteScrollController,
-                shrinkWrap: true,
-                itemCount: _searchResults.length,
-                separatorBuilder: (context, index) => const Divider(
-                  height: 1,
-                  color: Colors.grey,
-                ),
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 4,
-                    ),
-                    title: Text(
-                      _searchResults[index],
-                      style: const TextStyle(
-                        fontFamily: 'Poppins',
-                        fontSize: 16,
-                      ),
-                    ),
-                    onTap: () {
-                      _searchController.text = _searchResults[index];
-                      _handleSearchSubmit(_searchResults[index]);
-                      setState(() {
-                        _showAutocomplete = false;
-                      });
-                    },
-                  );
-                },
-              ),
-            ),
-          )
-        : const SizedBox.shrink();
-  }
-
 }
-

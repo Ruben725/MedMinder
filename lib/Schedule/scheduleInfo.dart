@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:medminder/Home/home.dart';
 import 'package:medminder/getStarted/userAuth.dart';
+import 'package:medminder/custom.dart';
 
 class scheduleInfo extends StatefulWidget {
   final String medicationName;
@@ -9,26 +10,26 @@ class scheduleInfo extends StatefulWidget {
   scheduleInfo({Key? key, required this.medicationName}) : super(key: key);
 
   @override
-  _scheduleInfoState createState() => _scheduleInfoState();
+  scheduleInfoState createState() => scheduleInfoState();
 }
 
-class _scheduleInfoState extends State<scheduleInfo> {
+class scheduleInfoState extends State<scheduleInfo> {
   DocumentSnapshot? currentScheduleDocument;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   @override
   void initState() {
     super.initState();
-    _fetchCurrentSchedule();
+    getCurrentSchedule();
   }
 
-  void _fetchCurrentSchedule() async {
+  void getCurrentSchedule() async {
     try {
       // Get the current user's ID
       String? userId = userAuth.getId();
 
       // Query to find the specific medication schedule document
-      QuerySnapshot querySnapshot = await _firestore
+      QuerySnapshot querySnapshot = await firestore
           .collection('MedicationSchedule')
           .where('userId', isEqualTo: userId)
           .where('medicationName', isEqualTo: widget.medicationName)
@@ -58,7 +59,6 @@ class _scheduleInfoState extends State<scheduleInfo> {
       );
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -92,26 +92,26 @@ class _scheduleInfoState extends State<scheduleInfo> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            _buildInfoRow('Dosage:',
+                            Custom.buildInfoSection('Dosage:',
                                 currentScheduleDocument?['strength'] ?? 'N/A'),
                             SizedBox(height: 18),
-                            _buildInfoRow('Frequency:',
-                                currentScheduleDocument?['frequency'] ?? 'N/A'),
-                            SizedBox(height: 18),
-                            _buildInfoRow('Time:',
+                            Custom.buildInfoSection('Time:',
                                 currentScheduleDocument?['time'] ?? 'N/A'),
                             SizedBox(height: 18),
-                            if (currentScheduleDocument?['frequency'] ==
-                                'Selected Days')
-                              _buildDaysDisplay(
-                                  currentScheduleDocument?['days'] as List? ??
-                                      []),
-                            SizedBox(height: 18),
-                            _buildInfoRow(
+                            Custom.buildInfoSection(
                                 'Number of Pills:',
                                 currentScheduleDocument?['numberOfPills']
                                         ?.toString() ??
                                     'N/A'),
+                            SizedBox(height: 18),
+                            Custom.buildInfoSection('Frequency:',
+                                currentScheduleDocument?['frequency'] ?? 'N/A'),
+                            SizedBox(height: 18),
+                            if (currentScheduleDocument?['frequency'] ==
+                                'Selected Days')
+                              buildDaysDisplay(
+                                  currentScheduleDocument?['days'] as List? ??
+                                      []),
                           ],
                         )
                       else
@@ -127,7 +127,7 @@ class _scheduleInfoState extends State<scheduleInfo> {
             // Bottom Buttons Section
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: _buildActionButtons(context),
+              child: buildActionButtons(context),
             ),
           ],
         ),
@@ -135,32 +135,7 @@ class _scheduleInfoState extends State<scheduleInfo> {
     );
   }
 
-  Widget _buildInfoRow(String label, String value) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 22,
-            fontFamily: 'Poppins',
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        Text(
-          value,
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 22,
-            fontFamily: 'Poppins',
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildDaysDisplay(List<dynamic> selectedDaysInput) {
+  Widget buildDaysDisplay(List<dynamic> selectedDaysInput) {
     // Convert dynamic list to List<String>
     final List<String> selectedDays = selectedDaysInput.cast<String>();
 
@@ -218,7 +193,7 @@ class _scheduleInfoState extends State<scheduleInfo> {
     );
   }
 
-  Widget _buildActionButtons(BuildContext context) {
+  Widget buildActionButtons(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -242,7 +217,7 @@ class _scheduleInfoState extends State<scheduleInfo> {
         SizedBox(width: 16),
         Expanded(
           child: ElevatedButton(
-            onPressed: () => _handleMedicationTaken(context),
+            onPressed: () => handleMedicationTaken(context),
             style: ElevatedButton.styleFrom(
               backgroundColor: Color(0xFF00A624).withOpacity(0.5),
               foregroundColor: Colors.black,
@@ -255,18 +230,37 @@ class _scheduleInfoState extends State<scheduleInfo> {
     );
   }
 
-  void _handleMedicationTaken(BuildContext context) {
-    // Add your logic for marking medication as taken
-    // For example, you might want to:
-    // - Update a database or local storage
-    // - Log the medication intake
-    // - Check if the medication schedule is followed
+  void handleMedicationTaken(BuildContext context) async {
+    try {
+      // Check if we have a current schedule document
+      if (currentScheduleDocument != null) {
+        // Get the document reference
+        DocumentReference docRef = currentScheduleDocument!.reference;
 
-    // Show a confirmation
-    showPopup(
-        context: context,
-        icon: Icons.check_circle,
-        message: '${widget.medicationName} medication\nhas been taken');
+        // Update the document to mark medication as taken
+        await docRef.update({
+          'status': true,
+          'lastTakenTimestamp': FieldValue.serverTimestamp(),
+        });
+
+        // Show confirmation popup
+        showPopup(
+          context: context,
+          icon: Icons.check_circle,
+          message: '${widget.medicationName} medication\nhas been taken',
+        );
+      } else {
+        // If no document found, show an error
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('No medication schedule found')),
+        );
+      }
+    } catch (error) {
+      print('Error marking medication as taken: $error');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to mark medication as taken')),
+      );
+    }
   }
 }
 

@@ -8,13 +8,6 @@ import 'package:medminder/getStarted/userAuth.dart';
 //where you want to navigate to.
 
 class Custom {
-
-DateTime reminderT(TimeOfDay? time) {
-    TimeOfDay rTime = time ?? TimeOfDay(hour: 0, minute: 0);
-    DateTime now = DateTime.now();
-    DateTime reminder = DateTime(now.year, now.month, now.day, rTime.hour, rTime.minute);
-    return reminder;}
-
   static Widget newButton(String text, Color color, VoidCallback onPressed) {
     return SizedBox(
       width: 200,
@@ -168,7 +161,7 @@ DateTime reminderT(TimeOfDay? time) {
           title,
           style: TextStyle(
             color: Colors.black,
-            fontSize: 18,
+            fontSize: 22,
             fontFamily: 'Poppins',
             fontWeight: FontWeight.w500,
           ),
@@ -178,7 +171,7 @@ DateTime reminderT(TimeOfDay? time) {
           content,
           style: TextStyle(
             color: Colors.black,
-            fontSize: 16,
+            fontSize: 22,
             fontFamily: 'Poppins',
           ),
         ),
@@ -194,7 +187,7 @@ DateTime reminderT(TimeOfDay? time) {
           title,
           style: TextStyle(
             color: Colors.black,
-            fontSize: 18,
+            fontSize: 22,
             fontFamily: 'Poppins',
             fontWeight: FontWeight.w500,
           ),
@@ -208,7 +201,7 @@ DateTime reminderT(TimeOfDay? time) {
                           '• $item',
                           style: TextStyle(
                             color: Colors.black,
-                            fontSize: 16,
+                            fontSize: 22,
                             fontFamily: 'Poppins',
                           ),
                         ))
@@ -235,7 +228,7 @@ DateTime reminderT(TimeOfDay? time) {
           title,
           style: TextStyle(
             color: Colors.black,
-            fontSize: 18,
+            fontSize: 22,
             fontFamily: 'Poppins',
             fontWeight: FontWeight.w500,
           ),
@@ -249,7 +242,7 @@ DateTime reminderT(TimeOfDay? time) {
                           '• ${entry.key.replaceAll('_', ' ')}: ${entry.value}',
                           style: TextStyle(
                             color: Colors.black,
-                            fontSize: 16,
+                            fontSize: 22,
                             fontFamily: 'Poppins',
                           ),
                         ))
@@ -259,7 +252,7 @@ DateTime reminderT(TimeOfDay? time) {
                 'No consumption method details available',
                 style: TextStyle(
                   color: Colors.black,
-                  fontSize: 16,
+                  fontSize: 22,
                   fontFamily: 'Poppins',
                   fontStyle: FontStyle.italic,
                 ),
