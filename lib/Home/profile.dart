@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:medminder/custom.dart';
-import 'package:medminder/Home/settings.dart';
 import 'package:medminder/getStarted/userAuth.dart';
 
 class profile extends StatefulWidget {

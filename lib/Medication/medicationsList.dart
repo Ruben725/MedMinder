@@ -13,26 +13,25 @@ class MedicationsList extends StatefulWidget {
 }
 
 class _MedicationsListState extends State<MedicationsList> {
-  final TextEditingController _searchController = TextEditingController();
-  final ScrollController _scrollController = ScrollController();
-  final ScrollController _autocompleteScrollController = ScrollController();
+  final TextEditingController searchController = TextEditingController();
+  final ScrollController scrollController = ScrollController();
+  final ScrollController autocompleteController = ScrollController();
 
-  List<String> _allMedications =
+  List<String> allMeds =
       []; // used to contain all user medication for display; previously for testing
-  List<String> _searchResults = [];
-  bool _showAutocomplete = false;
-  List<String> _drugDataDocumentIds = [];
-  List<String> _allBrands = [];
+  List<String> searchResults = [];
+  bool autocomplete = false;
+  List<String> drugData = [];
+  List<String> allBrands = [];
 
   @override
   void initState() {
     super.initState();
-    _fetchDrugDataDocumentIds();
-    _fetchUserMedications();
-    _fetchBrandNames();
+    getDrugData();
+    getUserMeds(); // New method to fetch user's medications
   }
 
-  Future<void> _fetchUserMedications() async {
+  Future<void> getUserMeds() async {
     try {
       // Get the current user's ID
       String? userId = userAuth.getId();
@@ -42,24 +41,23 @@ class _MedicationsListState extends State<MedicationsList> {
       }
 
       // Reference to the MedicationSchedule collection
-      CollectionReference medicationScheduleCollection =
+      CollectionReference medicationSchedules =
           FirebaseFirestore.instance.collection('MedicationSchedule');
 
       // Query medications for the current user
-      QuerySnapshot querySnapshot = await medicationScheduleCollection
-          .where('userId', isEqualTo: userId)
-          .get();
+      QuerySnapshot querySnapshot =
+          await medicationSchedules.where('userId', isEqualTo: userId).get();
 
       // Extract unique medication names
-      Set<String> userMedications = querySnapshot.docs
+      Set<String> userMeds = querySnapshot.docs
           .map((doc) => doc['medicationName'] as String)
           .toSet(); // Using Set to remove duplicates
 
       setState(() {
-        _allMedications = userMedications.toList();
+        allMeds = userMeds.toList();
       });
     } catch (error) {
-      print('Error fetching user medications: $error');
+      print('Error obtaining user medications: $error');
 
       // Show a snackbar to inform the user about the error
       ScaffoldMessenger.of(context).showSnackBar(
@@ -71,22 +69,7 @@ class _MedicationsListState extends State<MedicationsList> {
     }
   }
 
-  Future<void> _fetchDrugDataDocumentIds() async {
-    try {
-      CollectionReference drugDataCollection =
-          FirebaseFirestore.instance.collection('DrugData');
-
-      QuerySnapshot querySnapshot = await drugDataCollection.get();
-
-      setState(() {
-        _drugDataDocumentIds = querySnapshot.docs.map((doc) => doc.id).toList();
-      });
-    } catch (error) {
-      print('Error fetching DrugData document IDs: $error');
-    }
-  }
-
-  Future<void> _fetchBrandNames() async {
+  Future<void> getDrugData() async {
     try {
       CollectionReference drugDataCollection =
           FirebaseFirestore.instance.collection('DrugData');
@@ -107,36 +90,37 @@ class _MedicationsListState extends State<MedicationsList> {
       }
 
       setState(() {
-        _allBrands =
+        drugData = querySnapshot.docs.map((doc) => doc.id).toList();
+        allBrands =
             allBrands.toSet().toList(); // Convert to Set to remove duplicates
       });
     } catch (error) {
-      print('Error fetching brand names: $error');
+      print('Error obtaining DrugData: $error');
     }
   }
 
-  void _handleSearch(String value) {
+  void drugSearch(String value) {
     // allows search by drug name and by brand name
-    List<String> allPossibleMedications = [
-      ..._drugDataDocumentIds,
-      ..._allBrands,
+    List<String> allMeds = [
+      ...drugData,
+      ...allBrands,
     ];
 
     setState(() {
       if (value.isEmpty) {
-        _searchResults = [];
-        _showAutocomplete = false;
+        searchResults = [];
+        autocomplete = false;
       } else {
-        _searchResults = allPossibleMedications
+        searchResults = allMeds
             .where((medication) =>
                 medication.toLowerCase().contains(value.toLowerCase()))
             .toList();
-        _showAutocomplete = true;
+        autocomplete = true;
       }
     });
   }
 
-  Future<void> _handleSearchSubmit(String query) async {
+  Future<void> searchSelect(String query) async {
     try {
       CollectionReference drugDataCollection =
           FirebaseFirestore.instance.collection('DrugData');
@@ -178,8 +162,8 @@ class _MedicationsListState extends State<MedicationsList> {
         }
       } else {
         // If no document found, check if the query matches a brand name
-        bool foundBrandMatch = false;
-        for (String brand in _allBrands) {
+        bool brandMatch = false;
+        for (String brand in allBrands) {
           if (brand.toLowerCase() == query.toLowerCase()) {
             // Navigate to MedicationInfo with the brand name
             QuerySnapshot brandSnapshot = await drugDataCollection
@@ -209,7 +193,7 @@ class _MedicationsListState extends State<MedicationsList> {
                       ),
                     ),
                   );
-                  foundBrandMatch = true;
+                  brandMatch = true;
                   break;
                 }
               }
@@ -217,7 +201,7 @@ class _MedicationsListState extends State<MedicationsList> {
           }
         }
 
-        if (!foundBrandMatch) {
+        if (!brandMatch) {
           // If no document found and no brand match, show a snackbar
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -228,7 +212,7 @@ class _MedicationsListState extends State<MedicationsList> {
         }
       }
 
-      _searchController.clear();
+      searchController.clear();
     } catch (error) {
       print('Error retrieving data from Firestore: $error');
       ScaffoldMessenger.of(context).showSnackBar(
@@ -240,8 +224,8 @@ class _MedicationsListState extends State<MedicationsList> {
     }
   }
 
-  Widget _buildSearchAutocomplete() {
-    return _showAutocomplete && _searchResults.isNotEmpty
+  Widget searchAutocomplete() {
+    return autocomplete && searchResults.isNotEmpty
         ? Container(
             margin: const EdgeInsets.symmetric(horizontal: 16),
             decoration: BoxDecoration(
@@ -262,11 +246,11 @@ class _MedicationsListState extends State<MedicationsList> {
               thumbColor: Colors.grey.withOpacity(0.5),
               radius: const Radius.circular(20),
               thickness: 4,
-              controller: _autocompleteScrollController,
+              controller: autocompleteController,
               child: ListView.separated(
-                controller: _autocompleteScrollController,
+                controller: autocompleteController,
                 shrinkWrap: true,
-                itemCount: _searchResults.length,
+                itemCount: searchResults.length,
                 separatorBuilder: (context, index) => const Divider(
                   height: 1,
                   color: Colors.grey,
@@ -278,17 +262,17 @@ class _MedicationsListState extends State<MedicationsList> {
                       vertical: 4,
                     ),
                     title: Text(
-                      _searchResults[index],
+                      searchResults[index],
                       style: const TextStyle(
                         fontFamily: 'Poppins',
                         fontSize: 16,
                       ),
                     ),
                     onTap: () {
-                      _searchController.text = _searchResults[index];
-                      _handleSearchSubmit(_searchResults[index]);
+                      searchController.text = searchResults[index];
+                      searchSelect(searchResults[index]);
                       setState(() {
-                        _showAutocomplete = false;
+                        autocomplete = false;
                       });
                     },
                   );
@@ -346,7 +330,7 @@ class _MedicationsListState extends State<MedicationsList> {
                         ),
                       ),
                       child: TextField(
-                        controller: _searchController,
+                        controller: searchController,
                         decoration: InputDecoration(
                           hintText: 'Search',
                           hintStyle: TextStyle(
@@ -363,27 +347,27 @@ class _MedicationsListState extends State<MedicationsList> {
                             vertical: 8,
                           ),
                         ),
-                        onChanged: _handleSearch,
-                        onSubmitted: _handleSearchSubmit,
+                        onChanged: drugSearch,
+                        onSubmitted: searchSelect,
                         textInputAction: TextInputAction.search,
                       ),
                     ),
                   ),
 
                   // Autocomplete Suggestions
-                  _buildSearchAutocomplete(),
+                  searchAutocomplete(),
 
                   // Medications List
                   Expanded(
                     child: ListView(
                       padding: const EdgeInsets.only(top: 16),
-                      children: _allMedications
+                      children: allMeds
                           .map((medication) => _buildMedicationCard(medication))
                           .toList(),
                     ),
                   ),
 
-                  // Bottom Navigation
+                  // Bottom Navigation (matching AppHome)
                   Custom.bottomNav(context),
                 ],
               ),
@@ -445,9 +429,9 @@ class _MedicationsListState extends State<MedicationsList> {
 
   @override
   void dispose() {
-    _searchController.dispose();
-    _scrollController.dispose();
-    _autocompleteScrollController.dispose();
+    searchController.dispose();
+    scrollController.dispose();
+    autocompleteController.dispose();
     super.dispose();
   }
 }

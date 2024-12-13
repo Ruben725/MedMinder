@@ -27,7 +27,8 @@ class MedicationInfo extends StatelessWidget {
     required this.synonyms,
   }) : super(key: key);
 
-  void _handleMedicationAdd(BuildContext context) {
+  // Function to handle medication being taken
+  void addMed(BuildContext context) {
     // Navigate to NewSchedule and pass the medication name
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(
@@ -64,20 +65,34 @@ class MedicationInfo extends StatelessWidget {
                       SizedBox(height: 16),
                       Divider(color: Color(0xFF00A624), thickness: 2),
                       SizedBox(height: 16),
+
+                      // Summary
                       Custom.buildInfoSection('Information:', summary),
                       SizedBox(height: 16),
+
+                      // Consumption Method
                       Custom.buildMapSection(
                           'Recommended Consumption:', consumptionMethod),
                       SizedBox(height: 16),
+
+                      // Food Interactions
                       Custom.buildInfoSection(
                           'Food Interactions:', foodInteractions),
                       SizedBox(height: 16),
+
+                      // Foods to Avoid
                       Custom.buildListSection('Foods to Avoid:', foodsToAvoid),
                       SizedBox(height: 16),
+
+                      // Side Effects
                       Custom.buildListSection('Side Effects:', sideEffects),
                       SizedBox(height: 16),
+
+                      // Brand Name
                       Custom.buildListSection('Brand Name:', brandName),
                       SizedBox(height: 16),
+
+                      // Synonyms
                       Custom.buildListSection('Synonyms:', synonyms),
                     ],
                   ),
@@ -88,7 +103,7 @@ class MedicationInfo extends StatelessWidget {
             // Bottom Buttons Section
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: _buildActionButtons(context),
+              child: actionButtons(context),
             ),
           ],
         ),
@@ -97,7 +112,7 @@ class MedicationInfo extends StatelessWidget {
   }
 
   // creates the back and Add Schedule buttons used for medInfo page navigation
-  Widget _buildActionButtons(BuildContext context) {
+  Widget actionButtons(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -121,7 +136,7 @@ class MedicationInfo extends StatelessWidget {
         SizedBox(width: 16),
         Expanded(
           child: ElevatedButton(
-            onPressed: () => _handleMedicationAdd(context),
+            onPressed: () => addMed(context),
             style: ElevatedButton.styleFrom(
               backgroundColor: Color(0xFF00A624).withOpacity(0.5),
               foregroundColor: Colors.black,

@@ -16,16 +16,16 @@ class EditMedication extends StatefulWidget {
 }
 
 class _EditMedicationState extends State<EditMedication> {
-  Map<String, dynamic>? _medicationData;
-  bool _isLoading = true;
+  Map<String, dynamic>? medData;
+  bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _fetchMedicationDetails();
+    getMedDetails();
   }
 
-  void _fetchMedicationDetails() async {
+  void getMedDetails() async {
     try {
       CollectionReference drugDataCollection =
           FirebaseFirestore.instance.collection('DrugData');
@@ -40,25 +40,25 @@ class _EditMedicationState extends State<EditMedication> {
 
       if (documentSnapshot.exists) {
         setState(() {
-          _medicationData = documentSnapshot.data() as Map<String, dynamic>?;
-          _isLoading = false;
+          medData = documentSnapshot.data() as Map<String, dynamic>?;
+          isLoading = false;
         });
       } else {
         setState(() {
-          _isLoading = false;
+          isLoading = false;
         });
-        _showErrorDialog('Medication details not found');
+        errorDialog('Medication details not found');
       }
     } catch (error) {
       setState(() {
-        _isLoading = false;
+        isLoading = false;
       });
-      _showErrorDialog('Error retrieving medication details');
+      errorDialog('Error retrieving medication details');
       print('Error retrieving medication details: $error');
     }
   }
 
-  void _showErrorDialog(String message) {
+  void errorDialog(String message) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -82,7 +82,7 @@ class _EditMedicationState extends State<EditMedication> {
     );
   }
 
-  void _removeMedication() {
+  void removeMed() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -90,14 +90,14 @@ class _EditMedicationState extends State<EditMedication> {
           title: Text(
             'Remove Medication',
             style: TextStyle(
-              fontSize: 24,
+              fontSize: 24, // Customizable title font size
               fontFamily: 'Poppins',
             ),
           ),
           content: Text(
             'Are you sure you want to remove this medication?',
             style: TextStyle(
-              fontSize: 18,
+              fontSize: 18, // Customizable content font size
               fontFamily: 'Poppins',
             ),
           ),
@@ -106,7 +106,7 @@ class _EditMedicationState extends State<EditMedication> {
               child: Text(
                 'Cancel',
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 18, // Customizable action button text size
                   fontFamily: 'Poppins',
                 ),
               ),
@@ -118,13 +118,14 @@ class _EditMedicationState extends State<EditMedication> {
               child: Text(
                 'Remove',
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 18, // Customizable action button text size
                   fontFamily: 'Poppins',
                   color: Colors.red,
                 ),
               ),
               onPressed: () async {
                 try {
+                  // Existing removal logic remains the same
                   String? userId = userAuth.getId();
 
                   CollectionReference medicationSchedule = FirebaseFirestore
@@ -168,9 +169,9 @@ class _EditMedicationState extends State<EditMedication> {
           Positioned.fill(
             bottom: 70, // Account for bottom nav bar height
             top: 40,
-            child: _isLoading
+            child: isLoading
                 ? Center(child: CircularProgressIndicator())
-                : _buildMedicationDetails(),
+                : medDetails(),
           ),
 
           // Sticky Bottom Navigation
@@ -185,8 +186,8 @@ class _EditMedicationState extends State<EditMedication> {
     );
   }
 
-  Widget _buildMedicationDetails() {
-    if (_medicationData == null) {
+  Widget medDetails() {
+    if (medData == null) {
       return Center(
         child: Text(
           'No medication details available',
@@ -224,33 +225,44 @@ class _EditMedicationState extends State<EditMedication> {
               thickness: 2,
             ),
             const SizedBox(height: 16),
-            Custom.buildInfoSection('Information:',
-                _medicationData?['summary'] ?? 'No summary available'),
-            SizedBox(height: 16),
-            Custom.buildMapSection('Recommended Consumption:',
-                _medicationData?['recommended_consumption_method'] ?? {}),
-            SizedBox(height: 16),
+            // Summary
             Custom.buildInfoSection(
-                'Food Interactions:',
-                _medicationData?['food_interaction'] ??
-                    'No known interactions'),
+                'Information:', medData?['summary'] ?? 'No summary available'),
             SizedBox(height: 16),
-            Custom.buildListSection(
-                'Foods to Avoid:', _medicationData?['foods_to_avoid'] ?? []),
+
+            // Consumption Method
+            Custom.buildMapSection('Recommended Consumption:',
+                medData?['recommended_consumption_method'] ?? {}),
             SizedBox(height: 16),
-            Custom.buildListSection(
-                'Side Effects:', _medicationData?['side_effects'] ?? []),
+
+            // Food Interactions
+            Custom.buildInfoSection('Food Interactions:',
+                medData?['food_interaction'] ?? 'No known interactions'),
             SizedBox(height: 16),
+
+            // Foods to Avoid
             Custom.buildListSection(
-                'Brand Name:', _medicationData?['brand_name'] ?? []),
+                'Foods to Avoid:', medData?['foods_to_avoid'] ?? []),
             SizedBox(height: 16),
+
+            // Side Effects
             Custom.buildListSection(
-                'Synonyms:', _medicationData?['synonym'] ?? []),
+                'Side Effects:', medData?['side_effects'] ?? []),
+            SizedBox(height: 16),
+
+            // Brand Name
+            Custom.buildListSection(
+                'Brand Name:', medData?['brand_name'] ?? []),
+            SizedBox(height: 16),
+
+            // Synonyms
+            Custom.buildListSection('Synonyms:', medData?['synonym'] ?? []),
+
             const SizedBox(height: 32),
             Center(
               child: Column(
                 children: [
-                  _buildActionButton('Edit', Colors.grey, () {
+                  actionButton('Edit', Colors.grey, () {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -258,7 +270,7 @@ class _EditMedicationState extends State<EditMedication> {
                                 medicationName: widget.medicationName)));
                   }),
                   const SizedBox(height: 16),
-                  _buildActionButton('Remove', Colors.red, _removeMedication),
+                  actionButton('Remove', Colors.red, removeMed),
                   const SizedBox(height: 20),
                 ],
               ),
@@ -269,7 +281,7 @@ class _EditMedicationState extends State<EditMedication> {
     );
   }
 
-  Widget _buildActionButton(String text, Color color, VoidCallback onPressed) {
+  Widget actionButton(String text, Color color, VoidCallback onPressed) {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(

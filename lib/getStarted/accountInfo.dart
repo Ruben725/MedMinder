@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/widgets.dart';
 import 'package:medminder/custom.dart';
 import 'package:medminder/getStarted/login.dart';
 import 'package:medminder/getStarted/userAuth.dart';
 import 'package:medminder/getStarted/personalInfo.dart';
 
-class accountInfo extends StatefulWidget {
-  const accountInfo({super.key});
+class AccountInfo extends StatefulWidget {
+  const AccountInfo({super.key});
 
   @override
-  State<accountInfo> createState() => _accountInfoState();
+  State<AccountInfo> createState() => AccountInfoState();
 }
 
-class _accountInfoState extends State<accountInfo> {
+class AccountInfoState extends State<AccountInfo> {
   final auth = userAuth();
   final formkey = GlobalKey<FormState>();
 
@@ -54,14 +52,14 @@ class _accountInfoState extends State<accountInfo> {
               Container(
                 height: 80, 
                 width: 300, 
-                child: Text('Sign Up: \n Account Info',
+                child: const Text('Sign Up: \n Account Info',
                         textAlign: TextAlign.center,
                         style:TextStyle(color: Colors.black, fontSize: 28, fontFamily: 'Poppins')
                         )
               ),
 
               //Used SizedBox to space out containers
-              SizedBox(height: 40.0),
+              const SizedBox(height: 40.0),
 
               //Email Input Field
               Container(
@@ -82,7 +80,7 @@ class _accountInfoState extends State<accountInfo> {
                 },
                 ),
               ),
-              SizedBox(height: 20.0),
+              const SizedBox(height: 20.0),
 
               //Confirm email input container
               Container(
@@ -99,7 +97,7 @@ class _accountInfoState extends State<accountInfo> {
                 validator: validateEmail,
                 ),
               ),
-              SizedBox(height: 20.0,),
+              const SizedBox(height: 20.0,),
 
               //Password Input Field
               Container(
@@ -118,7 +116,7 @@ class _accountInfoState extends State<accountInfo> {
                   }
                 ),
               ),
-              SizedBox(height: 20.0),
+              const SizedBox(height: 20.0),
 
               //Confirm Password Input Field
               Container(
@@ -135,29 +133,29 @@ class _accountInfoState extends State<accountInfo> {
                 validator: validatePW,
                 ),
               ),
-              SizedBox(height: 40.0),
+              const SizedBox(height: 40.0),
 
               //Next Button
-            SizedBox(
+              SizedBox(
               width: 200,
               child: ElevatedButton(
               onPressed: goToPersonal, 
               child: Text("Next", style: TextStyle(fontSize: 20, color: Color.fromRGBO(0, 0, 0, 1), ),),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Color.fromRGBO(65, 199, 62, 1),
+                          backgroundColor: const Color.fromRGBO(65, 199, 62, 1),
                           shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(25),
                           )
                           )),
             ),
-              SizedBox(height: 20.0),
+              const SizedBox(height: 20.0),
 
               //Back Button
               Custom.newButton('Back', 
-                    Color.fromRGBO(217, 217, 217, 1),
+                    const Color.fromRGBO(217, 217, 217, 1),
                      () {Navigator.push(context,
                             MaterialPageRoute(
-                              builder: (context) => Login(),  //Goes to Login Page
+                              builder: (context) => const Login(),  //Goes to Login Page
                             ),
                       );
                     },
@@ -168,21 +166,12 @@ class _accountInfoState extends State<accountInfo> {
       ),
     );
   }
-/*
-      _signup() async{
-      
-      final user = await auth.createUserA(emailController.text, pwController.text);
-      if (user != null){
-        print("User created");
-        goToPersonal(context);
-      }
-    }*/
 
     void goToPersonal(){
       if(formkey.currentState!.validate())
       { Navigator.push(
         context, 
-        MaterialPageRoute(builder: (context) => personalInfo(
+        MaterialPageRoute(builder: (context) => PersonalInfo(
           email: emailController.text,
           password: pwController.text,
          )

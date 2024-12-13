@@ -11,8 +11,8 @@ import 'package:timezone/data/latest.dart' as tz;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
   await NotificationRem.init();
+  await Firebase.initializeApp();
   await FirebaseAuth.instance.setLanguageCode('en');
   tz.initializeTimeZones();
   runApp(const MedMinder());

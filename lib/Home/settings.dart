@@ -55,7 +55,7 @@ class UserSettings extends StatelessWidget {
                     () async {
                   await userAuth.signout();
                   Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => loginInfo()));
+                      MaterialPageRoute(builder: (context) => LoginInfo()));
                 }),
                 SizedBox(
                   height: 10,
