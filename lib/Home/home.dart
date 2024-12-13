@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:medminder/Home/settings.dart';
-import 'package:medminder/Home/scheduleInfo.dart';
+import 'package:medminder/Schedule/scheduleInfo.dart';
 import 'package:medminder/custom.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

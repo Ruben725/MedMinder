@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:medminder/custom.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:medminder/Home/medicationInfo.dart';
-import 'package:medminder/Home/editMedication.dart';
+import 'package:medminder/Medication/medicationInfo.dart';
+import 'package:medminder/Medication/editMedication.dart';
 import 'package:medminder/getStarted/userAuth.dart';
 
 class MedicationsList extends StatefulWidget {

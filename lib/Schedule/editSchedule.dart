@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:medminder/Home/medicationsList.dart';
+import 'package:medminder/Medication/medicationsList.dart';
 import 'package:medminder/getStarted/userAuth.dart';
 import 'package:medminder/custom.dart';
 import 'scheduleUtil.dart';

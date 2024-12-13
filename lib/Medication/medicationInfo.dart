@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:medminder/Home/medicationsList.dart';
-import 'package:medminder/Home/newSchedule.dart';
+import 'package:medminder/Medication/medicationsList.dart';
+import 'package:medminder/Schedule/newSchedule.dart';
 import 'package:medminder/custom.dart';
 
 class MedicationInfo extends StatelessWidget {
