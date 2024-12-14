@@ -8,6 +8,9 @@ Features:
 Medication reminders and notifications
 Prescription Information
 
+Link to github:
+https://github.com/Ruben725/MedMinder
+
 Download Links:
 Flutter: https://docs.flutter.dev/get-started/install?gad_source=1&gclid=CjwKCAiAjeW6BhBAEiwAdKltMtREmGqXc5ZARzsaWHRev1YZsBijhhZ1XjyCgWjaxW0Lghen9HUJGBoCgcIQAvD_BwE&gclsrc=aw.ds
 
